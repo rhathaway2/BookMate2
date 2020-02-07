@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 */
 class ActivityPage extends StatefulWidget{
-  ActivityPage();
+  ActivityPage({Key key, this.uid}): super(key:key);
+  final String uid;
 
   @override
   _ActivityPageState createState() => _ActivityPageState();

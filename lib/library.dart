@@ -9,6 +9,8 @@ The purpose of this class is to display all the books in the users library
 It contains 2 lists of books booklist and favorited
 */
 class LibraryPage extends StatefulWidget {
+  LibraryPage({Key key, this.uid}): super(key:key);
+  final String uid;
 
   //List of books to display
   static Book test1 = new Book(

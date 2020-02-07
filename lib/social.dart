@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 */
 class SocialPage extends StatefulWidget{
-  SocialPage();
+  SocialPage({Key key, this.uid}): super(key:key);
+  final String uid;
 
   @override
   _SocialPageState createState() => _SocialPageState();
