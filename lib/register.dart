@@ -122,14 +122,43 @@ class _RegisterPageState extends State<RegisterPage> {
                                     "email": emailInputController.text,
                                   })
                                   .then((result) => {
-                                        print("Test"),
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) => HomePage(
                                                       uid: currentUser.user.uid,
                                                     )),
-                                                  (_)=>false),
+                                            (_) => false),
+                                        //add initial collections for user
+                                        Firestore.instance
+                                            .collection(
+                                                "users/${currentUser.user.uid}/Books")
+                                            .document()
+                                            .setData({}),
+                                        Firestore.instance
+                                            .collection(
+                                                "users/${currentUser.user.uid}/Notes")
+                                            .document()
+                                            .setData({}),
+                                        Firestore.instance
+                                            .collection(
+                                                "users/${currentUser.user.uid}/Reviews")
+                                            .document()
+                                            .setData({}),
+                                        Firestore.instance
+                                            .collection(
+                                                "users/${currentUser.user.uid}/Posts")
+                                            .document("Created Account")
+                                            .setData({
+                                          "Date": DateTime.now(),
+                                        }),
+                                        Firestore.instance
+                                            .collection(
+                                                "users/${currentUser.user.uid}/Friends")
+                                            .document()
+                                            .setData({}),
+
+                                        //clear inputs
                                         firstNameInputController.clear(),
                                         lastNameInputController.clear(),
                                         emailInputController.clear(),
