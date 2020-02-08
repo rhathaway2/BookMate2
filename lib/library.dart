@@ -68,16 +68,17 @@ class _LibraryPageState extends State<LibraryPage> {
   /*
   Get List of books from firebase
   */
-  Future initializeLibrary() async{
-    Firestore.instance.collection("users/${widget.uid}/Books").document();
-                                            
-  }
-
   Widget buildBookList(){
     return new StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection("users/${widget.uid}/Books").snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-        if(!snapshot.hasData) return new Center(child: Text("No books in library"));
+        if(!snapshot.hasData) {
+          return new ListTile(
+            leading: Icon(Icons.mood_bad),
+            title: Text("No books in library"),
+          subtitle: Text("Click below to find books"),
+          );
+        }
         return new ListView(children: getBookList(snapshot));
       }
     );
@@ -86,17 +87,19 @@ class _LibraryPageState extends State<LibraryPage> {
   getBookList(AsyncSnapshot<QuerySnapshot> snapshot){
     //add all books to booklist vector
     snapshot.data.documents.map((doc) => {
-      booklist.add(new Book(title: doc["title"], author: doc['author'], pages: doc['pages'], isbn: doc['isbn'], rating: doc['rating'], coverImageURL: doc['url'] )),
+      if(doc.documentID != "inializer"){
+        booklist.add(new Book(title: doc["title"], author: doc['author'], pages: doc['pages'], isbn: doc['isbn'], rating: doc['rating'], coverImageURL: doc['url'] )),
+      }
     });
-    //return books as a list
     return snapshot.data.documents.map(
       (doc) => 
         new Container(
           width: 400.0,
           height: 160.0,
           child: new BookCard(
-            new Book(title: doc["title"], author: doc['author'], pages: doc['pages'], isbn: doc['isbn'], rating: doc['rating'], coverImageURL: doc['url'] ),
-            false)))
+            new Book(title: doc["title"], author: doc['author'], pages: doc['pages'], isbn: doc['isbn'], rating: doc['rating'], coverImageURL: doc['url'] ), false
+            //book, favorited.contains(book)
+            )))
     .toList();
   }
 
