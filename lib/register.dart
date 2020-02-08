@@ -122,48 +122,60 @@ class _RegisterPageState extends State<RegisterPage> {
                                     "email": emailInputController.text,
                                   })
                                   .then((result) => {
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => HomePage(
-                                                      uid: currentUser.user.uid,
-                                                    )),
-                                            (_) => false),
-                                        //add initial collections for user
                                         Firestore.instance
-                                            .collection(
-                                                "users/${currentUser.user.uid}/Books")
-                                            .document()
-                                            .setData({}),
-                                        Firestore.instance
-                                            .collection(
-                                                "users/${currentUser.user.uid}/Notes")
-                                            .document()
-                                            .setData({}),
-                                        Firestore.instance
-                                            .collection(
-                                                "users/${currentUser.user.uid}/Reviews")
-                                            .document()
-                                            .setData({}),
-                                        Firestore.instance
-                                            .collection(
-                                                "users/${currentUser.user.uid}/Posts")
-                                            .document("Created Account")
-                                            .setData({
-                                          "Date": DateTime.now(),
-                                        }),
-                                        Firestore.instance
-                                            .collection(
-                                                "users/${currentUser.user.uid}/Friends")
-                                            .document()
-                                            .setData({}),
+                                            .collection("users")
+                                            .document(currentUser.user.uid)
+                                            .get()
+                                            .then((result) => {
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              HomePage(
+                                                                user: result,
+                                                                uid: currentUser.user.uid,
+                                                              )),
+                                                      (_) => false),
+                                                  //add initial collections for user
+                                                  Firestore.instance
+                                                      .collection(
+                                                          "users/${currentUser.user.uid}/Books")
+                                                      .document("initializer")
+                                                      .setData({}),
+                                                  Firestore.instance
+                                                      .collection(
+                                                          "users/${currentUser.user.uid}/Notes")
+                                                      .document("initializer")
+                                                      .setData({}),
+                                                  Firestore.instance
+                                                      .collection(
+                                                          "users/${currentUser.user.uid}/Reviews")
+                                                      .document("initializer")
+                                                      .setData({}),
+                                                  Firestore.instance
+                                                      .collection(
+                                                          "users/${currentUser.user.uid}/Posts")
+                                                      .document(
+                                                          "Created Account")
+                                                      .setData({
+                                                    "Date": DateTime.now(),
+                                                  }),
+                                                  Firestore.instance
+                                                      .collection(
+                                                          "users/${currentUser.user.uid}/Friends")
+                                                      .document("initializer")
+                                                      .setData({}),
 
-                                        //clear inputs
-                                        firstNameInputController.clear(),
-                                        lastNameInputController.clear(),
-                                        emailInputController.clear(),
-                                        pwdInputController.clear(),
-                                        confirmPwdInputController.clear()
+                                                  //clear inputs
+                                                  firstNameInputController
+                                                      .clear(),
+                                                  lastNameInputController
+                                                      .clear(),
+                                                  emailInputController.clear(),
+                                                  pwdInputController.clear(),
+                                                  confirmPwdInputController
+                                                      .clear()
+                                                })
                                       })
                                   .catchError((err) => print(err)))
                               .catchError((err) => print(err));

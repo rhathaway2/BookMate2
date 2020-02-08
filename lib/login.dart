@@ -87,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => HomePage(
+                                                  user: result,
                                                   uid: currentUser.user.uid,
                                                 ))))
                                 .catchError((err) => print(err)))
