@@ -29,6 +29,7 @@ class _SplashPageState extends State<SplashPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => HomePage(
+                                        user: result,
                                         uid: currentUser.uid,
                                       ))))
                       .catchError((err) => print(err))
