@@ -22,7 +22,6 @@ class _SocialPageState extends State<SocialPage>{
 
   @override
   void initState(){
-
     super.initState();
   }
 
