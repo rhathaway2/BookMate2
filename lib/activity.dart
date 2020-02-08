@@ -12,9 +12,6 @@ class ActivityPage extends StatefulWidget {
   final GlobalKey<ScaffoldState> dkey;
   final List<Post> activity = [];
 
-  TextEditingController postTitleInputController;
-  TextEditingController postDescripInputController;
-
   @override
   _ActivityPageState createState() => _ActivityPageState();
 }
