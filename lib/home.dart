@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'library.dart';
+import 'activity.dart';
+import 'social.dart';
 
 class HomePage extends StatefulWidget {
   
-  final String uid;
   HomePage({Key key, this.uid}) : super(key:key);
-
+  final String uid;
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage>{
-
-  //List of widgets to be displayed for each tab
-  final List<Widget> _pages = [
-    PlaceHolderWidget(),
-    PlaceHolderWidget(),
-    LibraryPage(),
-  ];
 
   final List<Tab> _tabs = [
     Tab(text: "Activity", icon: Icon(Icons.poll, color: Colors.cyan)),
@@ -27,6 +21,13 @@ class _HomePageState extends State<HomePage>{
 
   @override
   Widget build(BuildContext context) {
+    //List of widgets to be displayed for each tab
+    final List<Widget> _pages = [
+      ActivityPage(uid: widget.uid),
+      SocialPage(uid: widget.uid),
+      LibraryPage(uid: widget.uid),
+    ];
+
     return MaterialApp(
       title: 'BookMate',
       home: DefaultTabController(
