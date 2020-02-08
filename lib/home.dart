@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
     //List of widgets to be displayed for each tab
     final List<Widget> _pages = [
-      ActivityPage(uid: widget.uid, dkey: _drawerKey),
+      ActivityPage(uid: widget.uid, user:widget.user, dkey: _drawerKey),
       SocialPage(uid: widget.uid, dkey: _drawerKey),
       LibraryPage(uid: widget.uid, dkey: _drawerKey),
     ];
