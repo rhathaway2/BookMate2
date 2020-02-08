@@ -1,38 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'classes.dart';
 
 /*
 
 */
-class ActivityPage extends StatefulWidget{
-  ActivityPage({Key key, this.uid, this.dkey}): super(key:key);
+class ActivityPage extends StatefulWidget {
+  ActivityPage({Key key, this.uid, this.dkey, this.user}) : super(key: key);
+  final DocumentSnapshot user;
   final String uid;
   final GlobalKey<ScaffoldState> dkey;
+  final List<Post> activity = [];
+
+  TextEditingController postTitleInputController;
+  TextEditingController postDescripInputController;
+
   @override
   _ActivityPageState createState() => _ActivityPageState();
-
 }
 
 /*
 
 */
-class _ActivityPageState extends State<ActivityPage>{
+class _ActivityPageState extends State<ActivityPage> {
+  TextEditingController postTitleInputController;
+  TextEditingController postDescripInputController;
 
   @override
-  void initState(){
-
+  void initState() {
+    postTitleInputController = new TextEditingController();
+    postDescripInputController = new TextEditingController();
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
+        floatingActionButton: FloatingActionButton.extended(
           elevation: 4.0,
           icon: const Icon(Icons.add),
           label: const Text('Create Post'),
-          onPressed: () {},
+          onPressed: () {
+            _postDialog();
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
@@ -53,6 +63,120 @@ class _ActivityPageState extends State<ActivityPage>{
             ],
           ),
         ),
-    );
+        body: buildActivityList());
+  }
+
+  /*
+  Get List of books from firebase
+  */
+  Widget buildActivityList() {
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance
+            .collection("users/${widget.uid}/Posts")
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new ListTile(
+              leading: Icon(Icons.mood_bad),
+              title: Text("No Activity or Posts yes"),
+              subtitle: Text("Click below to post"),
+            );
+          }
+          return new ListView(children: getActivityList(snapshot));
+        });
+  }
+
+  getActivityList(AsyncSnapshot<QuerySnapshot> snapshot) {
+    //add all books to booklist vector
+    snapshot.data.documents.map((doc) => {
+          if (doc.documentID != "inializer")
+            {
+              widget.activity.add(new Post(
+                  title: doc['title'],
+                  contents: doc["contents"],
+                  time: doc["Date"].toString())),
+            }
+        });
+    return snapshot.data.documents
+        .map((doc) => new Padding(
+            padding: EdgeInsets.all(5.0),
+            child: new Container(
+                decoration: BoxDecoration(
+                  borderRadius: new BorderRadius.circular(15.0),
+                  border: Border(
+                    top: BorderSide(width: 1.0, color: Colors.black),
+                    bottom: BorderSide(width: 1.0, color: Colors.black),
+                    left: BorderSide(width: 1.0, color: Colors.black),
+                    right: BorderSide(width: 1.0, color: Colors.black),
+                  ),
+                ),
+                child: new ListTile(
+                  leading: new CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Text("${widget.user["fname"][0]}",
+                          style: TextStyle(fontSize: 30.0))),
+                  title: Text(doc['title']),
+                  subtitle: Text(doc['contents']),
+                ))))
+        .toList();
+  }
+
+  _postDialog() async {
+    await showDialog<String>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: const EdgeInsets.all(16.0),
+            content: Column(
+              children: <Widget>[
+                Text("Create a new Post"),
+                Expanded(
+                  child: TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(labelText: 'Post Title*'),
+                    controller: postTitleInputController,
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(labelText: 'Post Contents*'),
+                    controller: postDescripInputController,
+                  ),
+                )
+              ],
+            ),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    postTitleInputController.clear();
+                    postDescripInputController.clear();
+                    Navigator.pop(context);
+                  }),
+              FlatButton(
+                  child: Text('Add'),
+                  onPressed: () {
+                    if (postDescripInputController.text.isNotEmpty &&
+                        postTitleInputController.text.isNotEmpty) {
+                      Firestore.instance
+                          .collection('Posts')
+                          .document(postTitleInputController.text)
+                          .setData({
+                            "title": postTitleInputController.text,
+                            "contents": postDescripInputController.text,
+                            "date": DateTime.now()
+                          })
+                          .then((result) => {
+                                Navigator.pop(context),
+                                postTitleInputController.clear(),
+                                postDescripInputController.clear(),
+                              })
+                          .catchError((err) => print(err));
+                    }
+                  })
+            ],
+          );
+        });
   }
 }
