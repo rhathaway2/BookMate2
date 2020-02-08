@@ -6,8 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 */
 class SocialPage extends StatefulWidget{
-  SocialPage({Key key, this.uid}): super(key:key);
+  SocialPage({Key key, this.uid, this.dkey}): super(key:key);
   final String uid;
+  final GlobalKey<ScaffoldState> dkey;
 
   @override
   _SocialPageState createState() => _SocialPageState();
@@ -42,7 +43,9 @@ class _SocialPageState extends State<SocialPage>{
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.menu),
-                onPressed: () {},
+                onPressed: () {
+                  widget.dkey.currentState.openDrawer();
+                },
               ),
               IconButton(
                 icon: Icon(Icons.search),

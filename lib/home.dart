@@ -16,6 +16,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
+  //key for opening drawer
+  final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
+
   final List<Tab> _tabs = [
     Tab(text: "Activity", icon: Icon(Icons.poll, color: Colors.cyan)),
     Tab(text: "Social", icon: Icon(Icons.people, color: Colors.cyan)),
@@ -27,9 +30,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   Widget build(BuildContext context) {
     //List of widgets to be displayed for each tab
     final List<Widget> _pages = [
-      ActivityPage(uid: widget.uid),
-      SocialPage(uid: widget.uid),
-      LibraryPage(uid: widget.uid),
+      ActivityPage(uid: widget.uid, dkey: _drawerKey),
+      SocialPage(uid: widget.uid, dkey: _drawerKey),
+      LibraryPage(uid: widget.uid, dkey: _drawerKey),
     ];
 
     return MaterialApp(
@@ -37,6 +40,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
       home: DefaultTabController(
         length: 3,
         child: Scaffold(
+          key: _drawerKey,
           drawer: new SideDrawer(user: widget.user),
           appBar: AppBar(
             backgroundColor: Colors.white,

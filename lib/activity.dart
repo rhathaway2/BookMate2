@@ -6,9 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 */
 class ActivityPage extends StatefulWidget{
-  ActivityPage({Key key, this.uid}): super(key:key);
+  ActivityPage({Key key, this.uid, this.dkey}): super(key:key);
   final String uid;
-
+  final GlobalKey<ScaffoldState> dkey;
   @override
   _ActivityPageState createState() => _ActivityPageState();
 
@@ -42,7 +42,9 @@ class _ActivityPageState extends State<ActivityPage>{
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.menu),
-                onPressed: () {},
+                onPressed: () {
+                  widget.dkey.currentState.openDrawer();
+                },
               ),
               IconButton(
                 icon: Icon(Icons.search),

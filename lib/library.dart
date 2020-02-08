@@ -10,10 +10,12 @@ The purpose of this class is to display all the books in the users library
 It contains 2 lists of books booklist and favorited
 */
 class LibraryPage extends StatefulWidget {
-  LibraryPage({Key key, this.uid}): super(key:key);
+  LibraryPage({Key key, this.uid, this.dkey}): super(key:key);
   final String uid;
   final List<Book> booklist=[];
   final List<Book> favorited=[];
+  final GlobalKey<ScaffoldState> dkey;
+
 
   @override
   _LibraryPageState createState() =>
@@ -53,7 +55,9 @@ class _LibraryPageState extends State<LibraryPage> {
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.menu),
-                onPressed: () {},
+                onPressed: () {
+                  widget.dkey.currentState.openDrawer();
+                },
               ),
               IconButton(
                 icon: Icon(Icons.search),
