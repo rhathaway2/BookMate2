@@ -4,18 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 //file imports
 import 'classes.dart';
+import 'search.dart';
 
 /*
 The purpose of this class is to display all the books in the users library
 It contains 2 lists of books booklist and favorited
 */
 class LibraryPage extends StatefulWidget {
-  LibraryPage({Key key, this.uid, this.dkey}): super(key:key);
+  LibraryPage({Key key, this.uid, this.dkey}) : super(key: key);
   final String uid;
-  final List<Book> booklist=[];
-  final List<Book> favorited=[];
+  final List<Book> booklist = [];
+  final List<Book> favorited = [];
   final GlobalKey<ScaffoldState> dkey;
-
 
   @override
   _LibraryPageState createState() =>
@@ -30,11 +30,14 @@ class _LibraryPageState extends State<LibraryPage> {
   List<Book> booklist;
   List<Book> favorited;
 
+  String imageUrl = "";
+
   //Constructor
   _LibraryPageState({this.booklist, this.favorited});
 
   @override
-  void initState(){
+  void initState() {
+    //imageUrl = booklist[0].coverImageURL;
     super.initState();
   }
 
@@ -42,10 +45,13 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton.extended(
+          heroTag: "AddButton",
           elevation: 4.0,
           icon: const Icon(Icons.add),
           label: const Text('Add Book'),
-          onPressed: () {},
+          onPressed: () {
+            openSearchMenu();
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
@@ -70,42 +76,84 @@ class _LibraryPageState extends State<LibraryPage> {
   }
 
   /*
+  open search menu
+  */
+  void openSearchMenu() {
+    //open search menu
+    Navigator.of((context)).push(
+        MaterialPageRoute(builder: (context) => SearchList(uid: widget.uid)));
+  }
+
+  /*
   Get List of books from firebase
   */
-  Widget buildBookList(){
+  Widget buildBookList() {
     return new StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection("users/${widget.uid}/Books").snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-        if(!snapshot.hasData) {
-          return new ListTile(
-            leading: Icon(Icons.mood_bad),
-            title: Text("No books in library"),
-          subtitle: Text("Click below to find books"),
-          );
-        }
-        return new ListView(children: getBookList(snapshot));
-      }
-    );
+        stream: Firestore.instance
+            .collection("users/${widget.uid}/Books")
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new ListTile(
+              leading: Icon(Icons.mood_bad),
+              title: Text("No books in library"),
+              subtitle: Text("Click below to find books"),
+            );
+          }
+          return new ListView(children: getBookList(snapshot));
+        });
   }
 
-  getBookList(AsyncSnapshot<QuerySnapshot> snapshot){
+  /*
+  Map firebase snapshop to BookCards
+  */
+  getBookList(AsyncSnapshot<QuerySnapshot> snapshot) {
     //add all books to booklist vector
     snapshot.data.documents.map((doc) => {
-      if(doc.documentID != "inializer"){
-        booklist.add(new Book(title: doc["title"], author: doc['author'], pages: doc['pages'], isbn: doc['isbn'], rating: doc['rating'], coverImageURL: doc['url'] )),
-      }
-    });
-    return snapshot.data.documents.map(
-      (doc) => 
-        new Container(
-          width: 400.0,
-          height: 160.0,
-          child: new BookCard(
-            new Book(title: doc["title"], author: doc['author'], pages: doc['pages'], isbn: doc['isbn'], rating: doc['rating'], coverImageURL: doc['url'] ), false
+          if (doc.documentID != "inializer")
+            {
+              booklist.add(new Book(
+                  title: doc["title"],
+                  author: doc['author'],
+                  pages: doc['pages'],
+                  isbn: doc['isbn'],
+                  rating: doc['rating'],
+                  coverImageURL: doc['url'])),
+            }
+        });
+    return snapshot.data.documents
+        .map((doc) => new Container(
+            width: 400.0,
+            height: 160.0,
+            child: new BookCard(
+              new Book(
+                  title: doc["title"],
+                  author: doc['author'],
+                  pages: doc['pages'],
+                  isbn: doc['isbn'],
+                  rating: doc['rating'],
+                  coverImageURL: doc['url']),
+              false,
             )))
-    .toList();
+        .toList();
   }
 
+  /*
+  Add a book to firebase for the current user
+  */
+  void addBookToFireBase(Book book) {
+    Firestore.instance
+        .collection("users/${widget.uid}/Books")
+        .document((book.title))
+        .setData({
+      "title": book.title,
+      "author": book.author,
+      "pages": book.pages,
+      "isbn": book.isbn,
+      "rating": book.rating,
+      "url": book.coverImageURL
+    });
+  }
 }
 
 //Class for each book card
@@ -172,6 +220,7 @@ class _BookCardState extends State<BookCard> {
                         left: 100.0,
                       ),
                       child: FloatingActionButton(
+                        heroTag: Key(widget.book.title),
                         onPressed: () {
                           setState(() {
                             isFavorited = !isFavorited;
@@ -197,8 +246,8 @@ class _BookCardState extends State<BookCard> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 3.0),
       child: Container(
-          height: 160.0,
-          width: 200.0,
+          height: 154.0,
+          width: 400.0,
           child: Stack(
             children: <Widget>[
               Positioned(left: 70.0, child: bookCard),
