@@ -1,5 +1,6 @@
 //flutter imports
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //file imports
 import 'classes.dart';
@@ -11,44 +12,7 @@ It contains 2 lists of books booklist and favorited
 class LibraryPage extends StatefulWidget {
   LibraryPage({Key key, this.uid}): super(key:key);
   final String uid;
-
-  //List of books to display
-  static Book test1 = new Book(
-    title: "Ender's Game",
-    author: "Orson Scott Card",
-    pages: 350,
-    isbn: 1234567890,
-    rating: 4.67,
-    coverImageURL: "https://raw.githubusercontent.com/rhathaway2/BookMate/master/imgs/endersgame.jpg"
-  );  
-  static Book test2 = new Book(
-    title: "The Eye of the World",
-    author: "Robert Jordan",
-    pages: 465,
-    isbn: 0987654321,
-    rating: 4.89,
-    coverImageURL: "https://raw.githubusercontent.com/rhathaway2/BookMate/master/imgs/eyeoftheworld.jpg"
-  );  
-  static Book test3 = new Book(
-    title: "Dune",
-    author: "Frank Herbert",
-    pages: 542,
-    isbn: 0987654321,
-    rating: 4.37,
-    coverImageURL: "https://raw.githubusercontent.com/rhathaway2/BookMate/master/imgs/dune.jpg"
-  );  
-  static Book test4 = new Book(
-    title: "Hyperion",
-    author: "Dan Simmons",
-    pages: 398,
-    isbn: 0987654321,
-    rating: 4.74,
-    coverImageURL: "https://raw.githubusercontent.com/rhathaway2/BookMate/master/imgs/hyperion.jpg"
-  );  
-
-
-
-  final List<Book> booklist=[test1, test2, test3, test4];
+  final List<Book> booklist=[];
   final List<Book> favorited=[];
 
   @override
@@ -66,6 +30,11 @@ class _LibraryPageState extends State<LibraryPage> {
 
   //Constructor
   _LibraryPageState({this.booklist, this.favorited});
+
+  @override
+  void initState(){
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,23 +62,44 @@ class _LibraryPageState extends State<LibraryPage> {
             ],
           ),
         ),
-        body: _buildBookList());
+        body: buildBookList());
   }
 
-  //function to build book list
-  Widget _buildBookList() {
-    return ListView.builder(
-        key: UniqueKey(),
-        padding: const EdgeInsets.all(10.0),
-        //number of items is the size of our list
-        itemCount: booklist.length,
-        itemBuilder: (context, i) {
-          //build each individual row
-          Book cur = booklist[i];
-          bool fav = favorited.contains(cur);
-          return BookCard(cur, fav);
-        });
+  /*
+  Get List of books from firebase
+  */
+  Future initializeLibrary() async{
+    Firestore.instance.collection("users/${widget.uid}/Books").document();
+                                            
   }
+
+  Widget buildBookList(){
+    return new StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection("users/${widget.uid}/Books").snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        if(!snapshot.hasData) return new Center(child: Text("No books in library"));
+        return new ListView(children: getBookList(snapshot));
+      }
+    );
+  }
+
+  getBookList(AsyncSnapshot<QuerySnapshot> snapshot){
+    //add all books to booklist vector
+    snapshot.data.documents.map((doc) => {
+      booklist.add(new Book(title: doc["title"], author: doc['author'], pages: doc['pages'], isbn: doc['isbn'], rating: doc['rating'], coverImageURL: doc['url'] )),
+    });
+    //return books as a list
+    return snapshot.data.documents.map(
+      (doc) => 
+        new Container(
+          width: 400.0,
+          height: 160.0,
+          child: new BookCard(
+            new Book(title: doc["title"], author: doc['author'], pages: doc['pages'], isbn: doc['isbn'], rating: doc['rating'], coverImageURL: doc['url'] ),
+            false)))
+    .toList();
+  }
+
 }
 
 //Class for each book card
@@ -127,11 +117,6 @@ class _BookCardState extends State<BookCard> {
   Book book; //book being displayed
   bool isFavorited;
   _BookCardState(this.book, this.isFavorited);
-
-  //init state function
-  void initState() {
-    super.initState();
-  }
 
   //get cover of the book
   Widget get coverImage {
