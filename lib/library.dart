@@ -102,7 +102,6 @@ class _LibraryPageState extends State<LibraryPage> {
           height: 160.0,
           child: new BookCard(
             new Book(title: doc["title"], author: doc['author'], pages: doc['pages'], isbn: doc['isbn'], rating: doc['rating'], coverImageURL: doc['url'] ), false
-            //book, favorited.contains(book)
             )))
     .toList();
   }
