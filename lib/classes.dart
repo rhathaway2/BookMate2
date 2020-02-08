@@ -6,7 +6,20 @@ Current Classes:
 1. Note
 2. Review
 3. Books
+4. Post
 */
+
+class Post{
+  String title;
+  String contents;
+  String time;
+
+  Post({
+    this.title,
+    this.contents,
+    this.time
+  });
+}
 
 /*
 Class to store a note
