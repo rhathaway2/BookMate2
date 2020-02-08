@@ -15,22 +15,21 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   //key for opening drawer
   final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
 
   final List<Tab> _tabs = [
-    Tab(text: "Activity", icon: Icon(Icons.poll, color: Colors.cyan)),
-    Tab(text: "Social", icon: Icon(Icons.people, color: Colors.cyan)),
-    Tab(text: "Library", icon: Icon(Icons.book, color: Colors.cyan)),
+    Tab(child: Row(children: <Widget>[Icon(Icons.poll, color: Colors.cyan), Text("Activity")],)),
+    Tab(child: Row(children: <Widget>[Icon(Icons.people, color: Colors.cyan), Text("Social")],)),
+    Tab(child: Row(children: <Widget>[Icon(Icons.book, color: Colors.cyan), Text("Library")],)),
   ];
-
 
   @override
   Widget build(BuildContext context) {
     //List of widgets to be displayed for each tab
     final List<Widget> _pages = [
-      ActivityPage(uid: widget.uid, user:widget.user, dkey: _drawerKey),
+      ActivityPage(uid: widget.uid, user: widget.user, dkey: _drawerKey),
       SocialPage(uid: widget.uid, dkey: _drawerKey),
       LibraryPage(uid: widget.uid, dkey: _drawerKey),
     ];
@@ -106,9 +105,7 @@ class SideDrawer extends StatelessWidget {
                 _userLogOut();
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => LoginPage()
-                    ),
+                    MaterialPageRoute(builder: (context) => LoginPage()),
                     (_) => false);
               }),
         ],
