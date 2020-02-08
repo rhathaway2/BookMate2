@@ -30,8 +30,6 @@ class _LibraryPageState extends State<LibraryPage> {
   List<Book> booklist;
   List<Book> favorited;
 
-  String imageUrl = "";
-
   //Constructor
   _LibraryPageState({this.booklist, this.favorited});
 
