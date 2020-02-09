@@ -1,4 +1,5 @@
 //flutter imports
+import 'package:bookmate2/BookDetailsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -45,6 +46,7 @@ class _LibraryPageState extends State<LibraryPage> {
         floatingActionButton: FloatingActionButton.extended(
           heroTag: "AddButton",
           elevation: 4.0,
+          backgroundColor: Colors.teal[200],
           icon: const Icon(Icons.add),
           label: const Text('Add Book'),
           onPressed: () {
@@ -116,7 +118,8 @@ class _LibraryPageState extends State<LibraryPage> {
                   pages: doc['pages'],
                   isbn: doc['isbn'],
                   rating: doc['rating'],
-                  coverImageURL: doc['url'])),
+                  coverImageURL: doc['url'],
+                  userRating: doc['userRating'].toDouble())),
             }
         });
     return snapshot.data.documents
@@ -130,8 +133,10 @@ class _LibraryPageState extends State<LibraryPage> {
                   pages: doc['pages'],
                   isbn: doc['isbn'],
                   rating: doc['rating'],
-                  coverImageURL: doc['url']),
+                  coverImageURL: doc['url'],
+                  userRating: doc['userRating'].toDouble()),
               false,
+              widget.uid
             )))
         .toList();
   }
@@ -149,7 +154,8 @@ class _LibraryPageState extends State<LibraryPage> {
       "pages": book.pages,
       "isbn": book.isbn,
       "rating": book.rating,
-      "url": book.coverImageURL
+      "url": book.coverImageURL,
+      "userRating": book.userRating
     });
   }
 }
@@ -158,7 +164,8 @@ class _LibraryPageState extends State<LibraryPage> {
 class BookCard extends StatefulWidget {
   final Book book; //book displayed on card
   final bool isFavorited;
-  BookCard(this.book, this.isFavorited); //constructor
+  final String uid;
+  BookCard(this.book, this.isFavorited, this.uid); //constructor
 
   @override
   _BookCardState createState() => _BookCardState(book, isFavorited);
@@ -243,7 +250,12 @@ class _BookCardState extends State<BookCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 3.0),
-      child: Container(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of((context)).push(
+            MaterialPageRoute(builder: (context) => BookDetailsPage(uid: widget.uid, book: widget.book)));
+        },
+        child: Container(
           height: 154.0,
           width: 400.0,
           child: Stack(
@@ -252,6 +264,7 @@ class _BookCardState extends State<BookCard> {
               Positioned(top: 5.0, child: coverImage),
             ],
           )),
+      )
     );
   }
 }
