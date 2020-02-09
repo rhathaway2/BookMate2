@@ -49,6 +49,7 @@ class Book{
   int isbn;                    
   double rating;               
   String coverImageURL;
+  double userRating;
   //constructor for book       
   Book({
     this.title,
@@ -57,5 +58,6 @@ class Book{
     this.isbn,                 
     this.rating,               
     this.coverImageURL,
+    this.userRating
   });
 }
