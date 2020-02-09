@@ -20,9 +20,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
 
   final List<Tab> _tabs = [
-    Tab(child: Row(children: <Widget>[Icon(Icons.poll, color: Colors.cyan), Text("Activity")],)),
-    Tab(child: Row(children: <Widget>[Icon(Icons.people, color: Colors.cyan), Text("Social")],)),
-    Tab(child: Row(children: <Widget>[Icon(Icons.book, color: Colors.cyan), Text("Library")],)),
+    Tab(child: Row(children: <Widget>[Icon(Icons.poll, color: Colors.teal[200]), Text("Activity")],)),
+    Tab(child: Row(children: <Widget>[Icon(Icons.people, color: Colors.teal[200]), Text("Social")],)),
+    Tab(child: Row(children: <Widget>[Icon(Icons.book, color: Colors.teal[200]), Text("Library")],)),
   ];
 
   @override
@@ -46,8 +46,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             title: Text("BookMate"),
             textTheme: TextTheme(
                 title: TextStyle(
-                    color: Colors.cyan, fontSize: 25.0, fontFamily: 'roboto')),
-            bottom: TabBar(labelColor: Colors.cyan, tabs: _tabs),
+                    color: Colors.teal[200], fontSize: 25.0, fontFamily: 'roboto')),
+            bottom: TabBar(labelColor: Colors.teal[200], tabs: _tabs),
           ),
           body: TabBarView(
             children: _pages,
@@ -79,15 +79,17 @@ class SideDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
+            decoration: BoxDecoration(color: Colors.teal[200]),
             accountName: Text("${user["fname"]} ${user["surname"]}"),
             accountEmail: Text("${user["email"]}"),
             currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
                 child: Text("${user["fname"][0]}${user["surname"][0]}",
-                    style: TextStyle(fontSize: 40.0))),
+                    style: TextStyle(fontSize: 40.0, color: Colors.teal[200]))),
           ),
           ListTile(
               leading: Icon(Icons.person),
