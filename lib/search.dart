@@ -28,7 +28,7 @@ class SearchListState extends State<SearchList> {
       appBar: AppBar(
         leading: BackButton(color: Colors.black),
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        //backgroundColor: Colors.white,
         title: Text("Find A Book", style: TextStyle(color: Colors.black)),
       ),
       body: Column(children: <Widget>[

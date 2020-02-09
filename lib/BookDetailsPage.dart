@@ -27,7 +27,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        //backgroundColor: Colors.white,
         appBar: AppBar(
           bottomOpacity: 0.0,
           elevation: 0.0,
@@ -39,7 +39,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             },
           ),
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
+          //backgroundColor: Colors.white,
         ),
         body: Column(children: [
           Padding(

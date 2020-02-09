@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
   HomePage({Key key, this.uid, this.user}) : super(key: key);
   final String uid;
   final DocumentSnapshot user;
+  static bool darkTheme = false;
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -20,13 +21,51 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
 
   final List<Tab> _tabs = [
-    Tab(child: Row(children: <Widget>[Icon(Icons.poll, color: Colors.teal[200]), Text("Activity")],)),
-    Tab(child: Row(children: <Widget>[Icon(Icons.people, color: Colors.teal[200]), Text("Social")],)),
-    Tab(child: Row(children: <Widget>[Icon(Icons.book, color: Colors.teal[200]), Text("Library")],)),
+    Tab(
+        child: Row(
+      children: <Widget>[
+        Icon(Icons.poll, color: Colors.teal[200]),
+        Text("Activity")
+      ],
+    )),
+    Tab(
+        child: Row(
+      children: <Widget>[
+        Icon(Icons.people, color: Colors.teal[200]),
+        Text("Social")
+      ],
+    )),
+    Tab(
+        child: Row(
+      children: <Widget>[
+        Icon(Icons.book, color: Colors.teal[200]),
+        Text("Library")
+      ],
+    )),
   ];
+
+  //function to toggle dark mode
+  void toggleDarkMode(){
+    //update boolean
+    HomePage.darkTheme = !HomePage.darkTheme;
+    //update firebase
+    Firestore.instance.document("users/${widget.uid}").updateData({"darkMode": HomePage.darkTheme});
+    //update app
+    setState((){});
+  }
+
+  void initState(){
+    super.initState();
+    //get dark mode setting from firebase
+    Firestore.instance.document("users/${widget.uid}").get()
+    .then(
+      (res) => res["darkMode"] == true ? HomePage.darkTheme=true : HomePage.darkTheme=false
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    
     //List of widgets to be displayed for each tab
     final List<Widget> _pages = [
       ActivityPage(uid: widget.uid, user: widget.user, dkey: _drawerKey),
@@ -34,19 +73,42 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       LibraryPage(uid: widget.uid, dkey: _drawerKey),
     ];
 
+    //get dark mode setting from firebase
+    Firestore.instance.document("users/${widget.uid}").get()
+    .then(
+      (res) => res["darkMode"] == true ? HomePage.darkTheme=true : HomePage.darkTheme=false
+    );
+
     return MaterialApp(
       title: 'BookMate',
+      theme: ThemeData(
+        appBarTheme:
+            AppBarTheme(color: Colors.white, brightness: Brightness.light),
+        backgroundColor: Colors.white,
+        primarySwatch: Colors.teal,
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        appBarTheme:
+            AppBarTheme(color: Colors.black54, brightness: Brightness.dark),
+        brightness: Brightness.dark,
+        primarySwatch: Colors.teal,
+        backgroundColor: Colors.black87,
+      ),
+      themeMode: (HomePage.darkTheme==true) ? ThemeMode.dark : ThemeMode.light,
       home: DefaultTabController(
         length: 3,
         child: Scaffold(
           key: _drawerKey,
-          drawer: new SideDrawer(user: widget.user),
+          drawer: new SideDrawer(user: widget.user, darkTheme: HomePage.darkTheme, toggleDarkTheme: toggleDarkMode,),
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            //backgroundColor: Colors.white,
             title: Text("BookMate"),
             textTheme: TextTheme(
                 title: TextStyle(
-                    color: Colors.teal[200], fontSize: 25.0, fontFamily: 'roboto')),
+                    color: Colors.teal[200],
+                    fontSize: 25.0,
+                    fontFamily: 'roboto')),
             bottom: TabBar(labelColor: Colors.teal[200], tabs: _tabs),
           ),
           body: TabBarView(
@@ -62,8 +124,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 Side drawer menu
 */
 class SideDrawer extends StatelessWidget {
-  SideDrawer({this.user});
+  SideDrawer({this.user, this.darkTheme, this.toggleDarkTheme});
   final DocumentSnapshot user;
+  final bool darkTheme;
+  final void Function() toggleDarkTheme;
 
   /*
     function to log out current firebase user
@@ -79,7 +143,6 @@ class SideDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
@@ -99,6 +162,16 @@ class SideDrawer extends StatelessWidget {
                 //exit drawer
                 Navigator.of(context).pop();
               }),
+          ListTile(
+              leading: Icon(Icons.person),
+              title: Text("Dark Theme"),
+              trailing: IconButton(
+                icon: (darkTheme==true ? Icon(Icons.check_box) : Icon(Icons.check_box_outline_blank)),
+                onPressed: (){
+                  toggleDarkTheme();
+                },
+              ),
+          ),
           ListTile(
               leading: Icon(Icons.arrow_back),
               title: Text("Log out"),

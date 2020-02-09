@@ -16,6 +16,12 @@ class MyApp extends StatelessWidget{
       theme: ThemeData(
         backgroundColor: Colors.white,
         primarySwatch: Colors.teal,
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.teal,
+        backgroundColor: Colors.black87,
       ),
       home: SplashPage(),
       routes: <String, WidgetBuilder>{
