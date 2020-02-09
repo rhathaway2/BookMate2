@@ -14,7 +14,8 @@ class MyApp extends StatelessWidget{
     return MaterialApp(
       title: 'BookMate',
       theme: ThemeData(
-        primarySwatch: Colors.cyan,
+        backgroundColor: Colors.white,
+        primarySwatch: Colors.teal,
       ),
       home: SplashPage(),
       routes: <String, WidgetBuilder>{
