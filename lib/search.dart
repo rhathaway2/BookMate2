@@ -61,7 +61,7 @@ class SearchListState extends State<SearchList> {
           },
           elevation: 5,
           minWidth: 200,
-          color: Colors.cyan,
+          color: Colors.teal[200],
           //Labels the button with search
           child: Text('Search'),
         ),
