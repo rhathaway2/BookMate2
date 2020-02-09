@@ -30,6 +30,7 @@ class _SocialPageState extends State<SocialPage>{
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
           elevation: 4.0,
+          backgroundColor: Colors.teal[200],
           icon: const Icon(Icons.group_add),
           label: const Text('Add Friend'),
           onPressed: () {},

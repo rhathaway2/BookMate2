@@ -34,6 +34,7 @@ class _ActivityPageState extends State<ActivityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: Colors.teal[200],
           elevation: 4.0,
           icon: const Icon(Icons.add),
           label: const Text('Create Post'),
