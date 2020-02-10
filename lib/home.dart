@@ -21,6 +21,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   //key for opening drawer
   final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
 
+  //tab controller
+  TabController controlla ;
+
+  final List<String> _title = ["Activity", "Friends", "Library"];
+
   final List<Tab> _tabs = [
     Tab(
         child: Row(
@@ -55,8 +60,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState((){});
   }
 
+  void update(){
+    setState((){});
+  }
+
   void initState(){
     super.initState();
+
+    controlla = TabController(vsync: this, length: _tabs.length);
     //get dark mode setting from firebase
     Firestore.instance.document("users/${widget.uid}").get()
     .then(
@@ -84,7 +95,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       title: 'BookMate',
       theme: ThemeData(
         appBarTheme:
-            AppBarTheme(color: Colors.white, brightness: Brightness.light),
+            AppBarTheme(color: Colors.white, brightness: Brightness.light, iconTheme: IconThemeData(color: Colors.teal[200])),
         backgroundColor: Colors.white,
         primarySwatch: Colors.teal,
         brightness: Brightness.light,
@@ -101,18 +112,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         length: 3,
         child: Scaffold(
           key: _drawerKey,
-          drawer: new SideDrawer(user: widget.user, darkTheme: HomePage.darkTheme, toggleDarkTheme: toggleDarkMode,),
+          drawer: new SideDrawer(user: widget.user, darkTheme: HomePage.darkTheme, toggleDarkTheme: toggleDarkMode, controlla: controlla, update: update),
+          
           appBar: AppBar(
+            automaticallyImplyLeading: false,
+            leading: null,
             //backgroundColor: Colors.white,
-            title: Text("BookMate"),
+            title: Center(child: Text(_title[controlla.index])),
             textTheme: TextTheme(
                 title: TextStyle(
                     color: Colors.teal[200],
                     fontSize: 25.0,
                     fontFamily: 'roboto')),
-            bottom: TabBar(labelColor: Colors.teal[200], tabs: _tabs),
+            //bottom: TabBar(labelColor: Colors.teal[200], tabs: _tabs),
+          //flexibleSpace: TabBar(labelColor: Colors.teal[200], tabs: _tabs),
           ),
           body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: controlla,
             children: _pages,
           ),
         ),
@@ -129,10 +146,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 Side drawer menu
 */
 class SideDrawer extends StatelessWidget {
-  SideDrawer({this.user, this.darkTheme, this.toggleDarkTheme});
+  SideDrawer({this.user, this.darkTheme, this.toggleDarkTheme, this.controlla, this.update});
   final DocumentSnapshot user;
   final bool darkTheme;
   final void Function() toggleDarkTheme;
+  final TabController controlla;
+  final void Function() update;
 
   /*
     function to log out current firebase user
@@ -164,6 +183,36 @@ class SideDrawer extends StatelessWidget {
               title: Text("Profile"),
               onTap: () {
                 //do stuff
+                //exit drawer
+                Navigator.of(context).pop();
+              }),
+          ListTile(
+              leading: Icon(Icons.poll),
+              title: Text("Activity"),
+              onTap: () {
+                //do stuff
+                controlla.animateTo(0);
+                update();
+                //exit drawer
+                Navigator.of(context).pop();
+              }),
+          ListTile(
+              leading: Icon(Icons.group),
+              title: Text("Friends"),
+              onTap: () {
+                //do stuff
+                controlla.animateTo(1);
+                update();
+                //exit drawer
+                Navigator.of(context).pop();
+              }),
+          ListTile(
+              leading: Icon(Icons.book),
+              title: Text("Library"),
+              onTap: () {
+                //do stuff
+                controlla.animateTo(2);
+                update();
                 //exit drawer
                 Navigator.of(context).pop();
               }),
