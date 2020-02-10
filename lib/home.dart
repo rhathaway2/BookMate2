@@ -168,7 +168,7 @@ class SideDrawer extends StatelessWidget {
                 Navigator.of(context).pop();
               }),
           ListTile(
-              leading: Icon(Icons.person),
+              leading: Icon(Icons.brightness_4),
               title: Text("Dark Theme"),
               trailing: IconButton(
                 icon: (darkTheme==true ? Icon(Icons.check_box) : Icon(Icons.check_box_outline_blank)),
