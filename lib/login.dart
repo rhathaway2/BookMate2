@@ -50,13 +50,20 @@ class _LoginPageState extends State<LoginPage> {
               image: DecorationImage(
                 image: AssetImage("images/bookshelf.png"),
                 colorFilter: new ColorFilter.mode(
-                    Colors.black.withOpacity(0.50), BlendMode.dstATop),
+                    Colors.black.withOpacity(0.75), BlendMode.dstATop),
                 fit: BoxFit.cover,
               ),
             ),
             padding: const EdgeInsets.all(20.0),
             child: SingleChildScrollView(
-                child: Form(
+                child: new Theme(
+                  data: new ThemeData(
+                    brightness: Brightness.light,
+                    primaryColor: Colors.white,
+                    primaryColorDark: Colors.white,
+                    primaryColorLight: Colors.white,
+                  ), 
+                  child: Form(
               key: _loginFormKey,
               child: Column(
                 children: <Widget>[
@@ -69,21 +76,26 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                                 fontSize: 65.0,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.teal[200],
+                                color: Colors.teal[300],
                                 fontFamily: 'Lobster'))),
                   ),
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email, color: Colors.black38),
+                        prefixIcon: Icon(Icons.email, color: Colors.white),
                         labelText: 'Email',
+                        labelStyle: TextStyle(color: Colors.white),
                         hintText: "john.doe@gmail.com",
+                        hintStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(30.0)),
                         border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white38),
+                            borderSide: BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(30.0)),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.teal[200]),
+                            borderSide: BorderSide(color: Colors.teal[300]),
                             borderRadius: BorderRadius.circular(30.0)),
                       ),
                       controller: emailInputController,
@@ -95,14 +107,19 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock, color: Colors.black38),
+                        prefixIcon: Icon(Icons.lock, color: Colors.white),
                         labelText: 'Password',
+                        labelStyle: TextStyle(color: Colors.white),
                         hintText: "********",
+                        hintStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(30.0)),
                         border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white38),
+                            borderSide: BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(30.0)),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.teal[200]),
+                            borderSide: BorderSide(color: Colors.teal[300]),
                             borderRadius: BorderRadius.circular(30.0)),
                       ),
                       controller: pwdInputController,
@@ -148,15 +165,15 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             },
                           ))),
-                  Text("Don't have an account yet?"),
+                  Text("Don't have an account yet?",style: TextStyle(color: Colors.white)),
                   FlatButton(
-                    child: Text("Register here!"),
+                    child: Text("Register here!", style: TextStyle(color: Colors.white),),
                     onPressed: () {
                       Navigator.pushNamed(context, "/register");
                     },
                   )
                 ],
               ),
-            ))));
+            )))));
   }
 }

@@ -56,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
               image: DecorationImage(
                 image: AssetImage("images/bookshelf.png"),
                 colorFilter: new ColorFilter.mode(
-                    Colors.black.withOpacity(0.50), BlendMode.dstATop),
+                    Colors.black.withOpacity(0.75), BlendMode.dstATop),
                 fit: BoxFit.cover,
               ),
             ),
@@ -81,15 +81,20 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
                       decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.person, color: Colors.black38),
+                          prefixIcon: Icon(Icons.person, color: Colors.white),
                           focusColor: Colors.white,
                           labelText: 'First Name',
+                          labelStyle: TextStyle(color: Colors.white),
                           hintText: "John",
+                          hintStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(30.0)),
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white38),
+                              borderSide: BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(30.0)),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.teal[200]),
+                              borderSide: BorderSide(color: Colors.teal[300]),
                               borderRadius: BorderRadius.circular(30.0)),
                         ),
                       controller: firstNameInputController,
@@ -104,15 +109,20 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
                         decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.person, color: Colors.black38),
+                            prefixIcon: Icon(Icons.person, color: Colors.white),
                             focusColor: Colors.white,
                             labelText: 'Last Name',
+                            labelStyle: TextStyle(color: Colors.white),
                             hintText: "Doe",
+                            hintStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(30.0)),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white38),
+                              borderSide: BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(30.0)),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.teal[200]),
+                                borderSide: BorderSide(color: Colors.teal[300]),
                                 borderRadius: BorderRadius.circular(30.0)),
                           ),
                         controller: lastNameInputController,
@@ -126,10 +136,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
                       decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.email, color: Colors.black38),
+                          prefixIcon: Icon(Icons.email, color: Colors.white),
                           focusColor: Colors.white,
                           labelText: 'Email',
+                          labelStyle: TextStyle(color: Colors.white),
                           hintText: "john.doe@gmail.com",
+                          hintStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(30.0)),
                           border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white38),
                               borderRadius: BorderRadius.circular(30.0)),
@@ -146,10 +161,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
                       decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.lock, color: Colors.black38),
+                          prefixIcon: Icon(Icons.lock, color: Colors.white),
                           focusColor: Colors.white,
                           labelText: 'Password',
+                          labelStyle: TextStyle(color: Colors.white),
                           hintText: "********",
+                          hintStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(30.0)),
                           border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white38),
                               borderRadius: BorderRadius.circular(30.0)),
@@ -166,9 +186,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
                       decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.lock, color: Colors.black38),
+                          prefixIcon: Icon(Icons.lock, color: Colors.white),
                           labelText: 'Confirm Password',
+                          labelStyle: TextStyle(color: Colors.white),
                           hintText: "********",
+                          hintStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(30.0)),
                           border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white38),
                               borderRadius: BorderRadius.circular(30.0)),
@@ -302,9 +327,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               }
                             },
                           ))),
-                  Text("Already have an account?"),
+                  Text("Already have an account?", style: TextStyle(color:Colors.white),),
                   FlatButton(
-                    child: Text("Login here!"),
+                    child: Text("Login here!", style: TextStyle(color:Colors.white)),
                     onPressed: () {
                       Navigator.pop(context);
                     },
