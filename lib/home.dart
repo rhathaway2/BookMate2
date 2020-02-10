@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'library.dart';
+import 'register.dart';
 import 'activity.dart';
 import 'social.dart';
 import 'login.dart';
@@ -116,7 +117,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       ),
-    );
+      routes: <String, WidgetBuilder>{
+        '/home': (BuildContext context) => HomePage(),
+        '/login': (BuildContext context) => LoginPage(),
+        '/register': (BuildContext context) => RegisterPage(),
+      });
   }
 }
 
@@ -177,11 +182,12 @@ class SideDrawer extends StatelessWidget {
               title: Text("Log out"),
               onTap: () {
                 //do stuff
-                _userLogOut();
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                    (_) => false);
+                _userLogOut().then((value){
+                  Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
+                });
               }),
         ],
       ),
