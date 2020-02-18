@@ -22,6 +22,7 @@ class ActivityPage extends StatefulWidget {
 class _ActivityPageState extends State<ActivityPage> {
   TextEditingController postTitleInputController;
   TextEditingController postDescripInputController;
+  bool searchVisible = false;
 
   @override
   void initState() {
@@ -33,35 +34,39 @@ class _ActivityPageState extends State<ActivityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: Colors.teal[200],
-          elevation: 4.0,
-          icon: const Icon(Icons.add),
-          label: const Text('Create Post'),
-          onPressed: () {
-            _postDialog();
-          },
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.teal[200],
+        elevation: 4.0,
+        icon: const Icon(Icons.add),
+        label: const Text('Create Post'),
+        onPressed: () {
+          _postDialog();
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        child: new Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                widget.dkey.currentState.openDrawer();
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                //searchVisible = !searchVisible;
+                //setState(() {});
+              },
+            )
+          ],
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
-          child: new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: () {
-                  widget.dkey.currentState.openDrawer();
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {},
-              )
-            ],
-          ),
-        ),
-        body: buildActivityList());
+      ),
+      body: buildActivityList(),
+    );
   }
 
   /*
@@ -176,5 +181,99 @@ class _ActivityPageState extends State<ActivityPage> {
             ],
           );
         });
+  }
+}
+
+class WeekActivity extends StatefulWidget {
+  @override
+  WeekActivityState createState() => WeekActivityState();
+}
+
+class WeekActivityState extends State<WeekActivity> {
+
+  List<ReadingData> readingData = [
+    ReadingData(day: "Sun", pages: 10),
+    ReadingData(day: "Mon", pages: 23),
+    ReadingData(day: "Tue", pages: 43),
+    ReadingData(day: "Wed", pages: 13),
+    ReadingData(day: "Thu", pages: 15),
+    ReadingData(day: "Fri", pages: 34),
+    ReadingData(day: "Sat", pages: 27),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50.0),
+        ),
+        child: Container(
+          child: WeekBarGraph(),
+        ),
+      ),
+    );
+  }
+}
+
+
+class WeekBarGraph extends StatefulWidget {
+  @override
+  WeekActivityState createState() => WeekActivityState();
+}
+
+class WeekBarBraphState extends State<WeekBarGraph> {
+
+  final Duration animDuration = Duration(milliseconds: 250);
+
+  int touchedIndex;
+
+  List<ReadingData> readingData = [
+    ReadingData(day: "Sun", pages: 10),
+    ReadingData(day: "Mon", pages: 23),
+    ReadingData(day: "Tue", pages: 43),
+    ReadingData(day: "Wed", pages: 13),
+    ReadingData(day: "Thu", pages: 15),
+    ReadingData(day: "Fri", pages: 34),
+    ReadingData(day: "Sat", pages: 27),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        color: Colors.teal[200],
+        child: Stack(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Text(
+                    'Weekly Activity',
+                    style: TextStyle(
+                        color: Colors.teal[200], fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    'Pages read this week',
+                    style: TextStyle(
+                        color: Colors.teal[200], fontSize: 18, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
