@@ -9,6 +9,15 @@ Current Classes:
 4. Post
 */
 
+class ReadingData{
+  String day;
+  double pages;
+  ReadingData({
+    this.day,
+    this.pages
+  });
+}
+
 class Post{
   String title;
   String contents;

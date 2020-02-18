@@ -5,6 +5,7 @@ import 'home.dart';
 import 'splash.dart';
 import 'login.dart';
 import 'register.dart';
+import 'constants.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,16 +14,8 @@ class MyApp extends StatelessWidget{
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'BookMate',
-      theme: ThemeData(
-        backgroundColor: Colors.white,
-        primarySwatch: Colors.teal,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.teal,
-        backgroundColor: Colors.black87,
-      ),
+      theme: Constants.lightTheme,
+      darkTheme: Constants.darkTheme,
       home: SplashPage(),
       routes: <String, WidgetBuilder>{
         '/home': (BuildContext context) => HomePage(),

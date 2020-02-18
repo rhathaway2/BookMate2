@@ -6,8 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 */
 class SocialPage extends StatefulWidget{
-  SocialPage({Key key, this.uid, this.dkey}): super(key:key);
+  SocialPage({Key key, this.uid, this.dkey, this.title}): super(key:key);
   final String uid;
+  final String title;
   final GlobalKey<ScaffoldState> dkey;
 
   @override
@@ -19,6 +20,7 @@ class SocialPage extends StatefulWidget{
 
 */
 class _SocialPageState extends State<SocialPage>{
+  bool searchVisible=false;
 
   @override
   void initState(){
@@ -28,6 +30,19 @@ class _SocialPageState extends State<SocialPage>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      /*
+      body: Visibility(
+              visible: searchVisible,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal:20),
+                child: SearchBar(
+                  onSearch: null,
+                  onItemFound: null,
+                  cancellationText: Text("Cancel"),
+                ),
+              ),
+              replacement: Container(),
+            ), */
       floatingActionButton: FloatingActionButton.extended(
           elevation: 4.0,
           backgroundColor: Colors.teal[200],
@@ -49,7 +64,10 @@ class _SocialPageState extends State<SocialPage>{
               ),
               IconButton(
                 icon: Icon(Icons.search),
-                onPressed: () {},
+                onPressed: () {
+                  searchVisible = !searchVisible;
+                  setState(() {});
+                },
               )
             ],
           ),

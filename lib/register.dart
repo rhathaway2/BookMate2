@@ -56,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
               image: DecorationImage(
                 image: AssetImage("images/bookshelf.png"),
                 colorFilter: new ColorFilter.mode(
-                    Colors.black.withOpacity(0.75), BlendMode.dstATop),
+                    Colors.black.withOpacity(1.0), BlendMode.dstATop),
                 fit: BoxFit.cover,
               ),
             ),
@@ -80,6 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                           prefixIcon: Icon(Icons.person, color: Colors.white),
                           focusColor: Colors.white,
@@ -108,6 +109,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
+                      style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                             prefixIcon: Icon(Icons.person, color: Colors.white),
                             focusColor: Colors.white,
@@ -135,6 +137,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                           prefixIcon: Icon(Icons.email, color: Colors.white),
                           focusColor: Colors.white,
@@ -160,6 +163,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                           prefixIcon: Icon(Icons.lock, color: Colors.white),
                           focusColor: Colors.white,
@@ -185,6 +189,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                           prefixIcon: Icon(Icons.lock, color: Colors.white),
                           labelText: 'Confirm Password',

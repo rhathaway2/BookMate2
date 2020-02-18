@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 //file imports
 import 'classes.dart';
+import 'constants.dart';
 import 'search.dart';
 
 /*

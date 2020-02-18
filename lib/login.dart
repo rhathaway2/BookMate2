@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
               image: DecorationImage(
                 image: AssetImage("images/bookshelf.png"),
                 colorFilter: new ColorFilter.mode(
-                    Colors.black.withOpacity(0.75), BlendMode.dstATop),
+                    Colors.black.withOpacity(1.0), BlendMode.dstATop),
                 fit: BoxFit.cover,
               ),
             ),
@@ -82,6 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.email, color: Colors.white),
                         labelText: 'Email',
@@ -106,6 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock, color: Colors.white),
                         labelText: 'Password',

@@ -5,6 +5,7 @@ import 'register.dart';
 import 'activity.dart';
 import 'social.dart';
 import 'login.dart';
+import 'constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 
@@ -12,7 +13,6 @@ class HomePage extends StatefulWidget {
   HomePage({Key key, this.uid, this.user}) : super(key: key);
   final String uid;
   final DocumentSnapshot user;
-  static bool darkTheme = false;
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -20,42 +20,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   //key for opening drawer
   final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
-
+  //bool darktheme
+  bool darkTheme;
   //tab controller
   TabController controlla ;
 
   final List<String> _title = ["Activity", "Friends", "Library"];
 
-  final List<Tab> _tabs = [
-    Tab(
-        child: Row(
-      children: <Widget>[
-        Icon(Icons.poll, color: Colors.teal[200]),
-        Text("Activity")
-      ],
-    )),
-    Tab(
-        child: Row(
-      children: <Widget>[
-        Icon(Icons.people, color: Colors.teal[200]),
-        Text("Social")
-      ],
-    )),
-    Tab(
-        child: Row(
-      children: <Widget>[
-        Icon(Icons.book, color: Colors.teal[200]),
-        Text("Library")
-      ],
-    )),
-  ];
+  _HomePageState({this.darkTheme});
 
   //function to toggle dark mode
   void toggleDarkMode(){
     //update boolean
-    HomePage.darkTheme = !HomePage.darkTheme;
+    darkTheme = !darkTheme;
     //update firebase
-    Firestore.instance.document("users/${widget.uid}").updateData({"darkMode": HomePage.darkTheme});
+    Firestore.instance.document("users/${widget.uid}").updateData({"darkMode": darkTheme});
     //update app
     setState((){});
   }
@@ -66,13 +45,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void initState(){
     super.initState();
-
-    controlla = TabController(vsync: this, length: _tabs.length);
-    //get dark mode setting from firebase
-    Firestore.instance.document("users/${widget.uid}").get()
-    .then(
-      (res) => res["darkMode"] == true ? HomePage.darkTheme=true : HomePage.darkTheme=false
-    );
+    darkTheme = widget.user['darkMode'];
+    controlla = TabController(vsync: this, length: _title.length);
   }
 
   @override
@@ -85,47 +59,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       LibraryPage(uid: widget.uid, dkey: _drawerKey),
     ];
 
-    //get dark mode setting from firebase
-    Firestore.instance.document("users/${widget.uid}").get()
-    .then(
-      (res) => res["darkMode"] == true ? HomePage.darkTheme=true : HomePage.darkTheme=false
-    );
-
     return MaterialApp(
       title: 'BookMate',
-      theme: ThemeData(
-        appBarTheme:
-            AppBarTheme(color: Colors.white, brightness: Brightness.light, iconTheme: IconThemeData(color: Colors.teal[200])),
-        backgroundColor: Colors.white,
-        primarySwatch: Colors.teal,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        appBarTheme:
-            AppBarTheme(color: Colors.black54, brightness: Brightness.dark),
-        brightness: Brightness.dark,
-        primarySwatch: Colors.teal,
-        backgroundColor: Colors.black87,
-      ),
-      themeMode: (HomePage.darkTheme==true) ? ThemeMode.dark : ThemeMode.light,
+      theme: Constants.lightTheme,
+      darkTheme: Constants.darkTheme,
+      themeMode: (darkTheme==true) ? ThemeMode.dark : ThemeMode.light,
       home: DefaultTabController(
         length: 3,
         child: Scaffold(
           key: _drawerKey,
-          drawer: new SideDrawer(user: widget.user, darkTheme: HomePage.darkTheme, toggleDarkTheme: toggleDarkMode, controlla: controlla, update: update),
-          
+          drawer: new SideDrawer(user: widget.user, darkTheme: darkTheme, toggleDarkTheme: toggleDarkMode, controlla: controlla, update: update),
           appBar: AppBar(
             automaticallyImplyLeading: false,
             leading: null,
-            //backgroundColor: Colors.white,
-            title: Center(child: Text(_title[controlla.index])),
-            textTheme: TextTheme(
-                title: TextStyle(
-                    color: Colors.teal[200],
-                    fontSize: 25.0,
-                    fontFamily: 'roboto')),
-            //bottom: TabBar(labelColor: Colors.teal[200], tabs: _tabs),
-          //flexibleSpace: TabBar(labelColor: Colors.teal[200], tabs: _tabs),
+            title: Center(child: Text(_title[controlla.index])),            
           ),
           body: TabBarView(
             physics: NeverScrollableScrollPhysics(),
