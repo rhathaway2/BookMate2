@@ -187,7 +187,7 @@ class _BookCardState extends State<BookCard> {
         shape: BoxShape.rectangle,
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(this.book.coverImageURL ?? ''),
+          image: this.book.coverImageURL=="" ? AssetImage('images/questionmark.png') : NetworkImage(this.book.coverImageURL ?? '')
         ),
       ),
     );
