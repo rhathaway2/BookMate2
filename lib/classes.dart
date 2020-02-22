@@ -58,7 +58,7 @@ class Book{
   int isbn;                    
   double rating;               
   String coverImageURL;
-  double userRating;
+  double userRating=0.0;
   //constructor for book       
   Book({
     this.title,
@@ -67,6 +67,6 @@ class Book{
     this.isbn,                 
     this.rating,               
     this.coverImageURL,
-    this.userRating
+    this.userRating=0.0
   });
 }
