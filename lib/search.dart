@@ -165,10 +165,14 @@ class SearchListState extends State<SearchList> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            CircularProgressIndicator(
+            Padding(
+              padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
+            child: CircularProgressIndicator(
               strokeWidth: 5,
               backgroundColor: Colors.teal[300],
-            )
+            ),
+            ),
+            Text("Searching... This may take a few seconds", style: TextStyle(fontSize: 14.0),)
           ],
         ),
       );
