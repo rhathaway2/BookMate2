@@ -117,28 +117,28 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       child: Center(
                           child: Text(
                         widget.book.title,
-                        style: TextStyle(fontSize: 25.0, color: Colors.white),
+                        style: TextStyle(fontSize: 25.0),
                       ))),
                   Padding(
                       padding: EdgeInsets.all(5.0),
                       child: Center(
                           child: Text(
                         "By ${widget.book.author}",
-                        style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        style: TextStyle(fontSize: 15.0),
                       ))),
                   Padding(
                       padding: EdgeInsets.all(5.0),
                       child: Center(
                           child: Text(
                         "${widget.book.pages} pages",
-                        style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        style: TextStyle(fontSize: 15.0),
                       ))),
                   Padding(
                       padding: EdgeInsets.all(5.0),
                       child: Center(
                           child: Text(
                         "${widget.book.rating} / 5.0 via Goodreads",
-                        style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        style: TextStyle(fontSize: 15.0),
                       ))),
                 ],
               )),
@@ -149,7 +149,20 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             color: Colors.black87,
           ),
           //review text box
-          
+          MaterialButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          key: Key("reviewButton"),
+          onPressed: () {
+            
+          },
+          elevation: 5,
+          minWidth: 200,
+          color: Colors.teal[200],
+          //Labels the button with search
+          child: Text('Review'),
+        ),
         ]));
   }
 }
