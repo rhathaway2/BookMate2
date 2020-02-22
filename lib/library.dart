@@ -2,10 +2,10 @@
 import 'package:bookmate2/BookDetailsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 //file imports
 import 'classes.dart';
-import 'constants.dart';
 import 'search.dart';
 
 /*
@@ -128,36 +128,17 @@ class _LibraryPageState extends State<LibraryPage> {
             width: 400.0,
             height: 160.0,
             child: new BookCard(
-              new Book(
-                  title: doc["title"],
-                  author: doc['author'],
-                  pages: doc['pages'],
-                  isbn: doc['isbn'],
-                  rating: doc['rating'],
-                  coverImageURL: doc['url'],
-                  userRating: doc['userRating'].toDouble()),
-              false,
-              widget.uid
-            )))
+                new Book(
+                    title: doc["title"],
+                    author: doc['author'],
+                    pages: doc['pages'],
+                    isbn: doc['isbn'],
+                    rating: doc['rating'],
+                    coverImageURL: doc['url'],
+                    userRating: doc['userRating'].toDouble()),
+                false,
+                widget.uid)))
         .toList();
-  }
-
-  /*
-  Add a book to firebase for the current user
-  */
-  void addBookToFireBase(Book book) {
-    Firestore.instance
-        .collection("users/${widget.uid}/Books")
-        .document((book.title))
-        .setData({
-      "title": book.title,
-      "author": book.author,
-      "pages": book.pages,
-      "isbn": book.isbn,
-      "rating": book.rating,
-      "url": book.coverImageURL,
-      "userRating": book.userRating
-    });
   }
 }
 
@@ -176,21 +157,46 @@ class BookCard extends StatefulWidget {
 class _BookCardState extends State<BookCard> {
   Book book; //book being displayed
   bool isFavorited;
+  Widget holdingImage = new Image(image: AssetImage('images/questionmark.png'));
   _BookCardState(this.book, this.isFavorited);
+
+  Future<Widget> getCoverImageFuture(coverURL) async {
+    Image img;
+    final ref = FirebaseStorage.instance.ref().child(coverURL);
+    var url = await ref.getDownloadURL();
+    img = Image.network(url.toString(), fit: BoxFit.cover);
+    return img;
+  }
 
   //get cover of the book
   Widget get coverImage {
-    return Container(
-      width: 100.0,
-      height: 150.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: this.book.coverImageURL=="" ? AssetImage('images/questionmark.png') : NetworkImage(this.book.coverImageURL ?? '')
-        ),
-      ),
-    );
+    return FutureBuilder(
+        future: getCoverImageFuture(book.coverImageURL),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            holdingImage = snapshot.data;
+            return Container(
+              padding: EdgeInsets.only(left: 2),
+              width: 100.0,
+              height: 150.0,
+              child: snapshot.data,
+              /*
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                image: new DecorationImage(
+                  image: snapshot.data
+                ),  
+              ),*/
+            );
+          } else {
+            return Container(
+              padding: EdgeInsets.only(left: 2),
+              width: 100.0,
+              height: 150.0,
+              child: holdingImage,
+            );
+          }
+        });
   }
 
   //get book card
@@ -250,22 +256,22 @@ class _BookCardState extends State<BookCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 3.0),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.of((context)).push(
-            MaterialPageRoute(builder: (context) => BookDetailsPage(uid: widget.uid, book: widget.book)));
-        },
-        child: Container(
-          height: 154.0,
-          width: 400.0,
-          child: Stack(
-            children: <Widget>[
-              Positioned(left: 70.0, child: bookCard),
-              Positioned(top: 5.0, child: coverImage),
-            ],
-          )),
-      )
-    );
+        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 3.0),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.of((context)).push(MaterialPageRoute(
+                builder: (context) =>
+                    BookDetailsPage(uid: widget.uid, book: widget.book)));
+          },
+          child: Container(
+              height: 154.0,
+              width: 400.0,
+              child: Stack(
+                children: <Widget>[
+                  Positioned(left: 70.0, child: bookCard),
+                  Positioned(top: 5.0, child: coverImage),
+                ],
+              )),
+        ));
   }
 }
