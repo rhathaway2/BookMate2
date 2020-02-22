@@ -1,9 +1,9 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'classes.dart';
 import 'package:http/http.dart';
-import 'dart:developer';
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //Class to represent search menu to add items to grocery list
 class SearchList extends StatefulWidget {
@@ -40,7 +40,9 @@ class SearchListState extends State<SearchList> {
             child: TextField(
                 key: Key("search"),
                 onTap: () {
-                  //clear search list when text field is tapped
+                  setState(() {
+                    bookToDisplay = false;
+                  });
                 },
                 onChanged: (value) {
                   _searchString = value;
@@ -74,8 +76,6 @@ class SearchListState extends State<SearchList> {
             print("Searching");
             searchForBook().then((ret) => {
                   setState(() {
-                    //display = ret;
-                    //bookToDisplay = true;
                   })
                 });
           },
@@ -112,65 +112,99 @@ class SearchListState extends State<SearchList> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-              Padding(
-              padding: EdgeInsets.all(10.0),
-              child: ButtonTheme(
-                minWidth: 150.0,
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: ButtonTheme(
+                    minWidth: 150.0,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      child: Text("Add"),
+                      color: Colors.teal[200],
+                      textColor: Colors.white,
+                      onPressed: () {
+                        setState(() {
+                          addBookToFireBaseUser(display);
+                          bookToDisplay = false;
+                          _textController.clear();
+                        });
+                      },
+                    ),
                   ),
-                  child: Text("Add"),
-                  color: Colors.teal[200],
-                  textColor: Colors.white,
-                  onPressed: () {
-                    
-                  },
                 ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: ButtonTheme(
-                minWidth: 150.0,
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: ButtonTheme(
+                    minWidth: 150.0,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      child: Text("Cancel"),
+                      color: Colors.pink,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        setState(() {
+                          bookToDisplay=false;
+                          _textController.clear();
+                        });
+                      },
+                    ),
                   ),
-                  child: Text("Cancel"),
-                  color: Colors.pink,
-                  textColor: Colors.white,
-                  onPressed: () {
-
-                  },
                 ),
-              ),
-            ),
-            ],)
+              ],
+            )
           ],
         ),
       );
     } else {
-      return Container(
-      );
+      return Container();
     }
+  }
+
+  Future<Widget> getCoverImageFuture(coverURL) async{
+    Image img;
+    final ref = FirebaseStorage.instance.ref().child(coverURL);
+    var url = await ref.getDownloadURL();
+    img = Image.network(url.toString(), fit: BoxFit.cover);
+    return img;
   }
 
   //get cover of the book
   Widget getCoverImage(Book book) {
-    return Container(
-      width: 100.0,
-      height: 150.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: book.coverImageURL == "NULL"
-              ? AssetImage('images/questionmark.png')
-              : NetworkImage(book.coverImageURL ?? ''),
-        ),
-      ),
-    );
+    return FutureBuilder(
+        future: getCoverImageFuture(book.coverImageURL),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Container(
+              padding: EdgeInsets.only(left: 2),
+              width: 100.0,
+              height: 150.0,
+              child: snapshot.data,
+              /*
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                image: new DecorationImage(
+                  image: snapshot.data
+                ),  
+              ),*/
+            );
+          } else {
+            return Container(
+              padding: EdgeInsets.only(left: 2),
+              width: 100.0,
+              height: 150.0,
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage('images/questionmark.png')
+                ),
+              ),
+            );
+          }
+        });
   }
 
   //get Add book card
@@ -215,21 +249,57 @@ class SearchListState extends State<SearchList> {
     return query;
   }
 
+  /*
+  Add a book to firebase for the current user
+  */
+  void addBookToFireBaseUser(Book book) {
+    Firestore.instance
+        .collection("users/${widget.uid}/Books")
+        .document((book.title))
+        .setData({
+      "title": book.title,
+      "author": book.author,
+      "pages": book.pages,
+      "isbn": book.isbn,
+      "rating": book.rating,
+      "url": book.coverImageURL,
+      "userRating": book.userRating,
+    });
+  }
+
+  /*
+  Add a book to firebase for global use
+  */
+  void addBookToFireBaseGlobal(Book book) {
+    Firestore.instance.collection("Books").document((book.title)).setData({
+      "title": book.title,
+      "author": book.author,
+      "pages": book.pages,
+      "isbn": book.isbn,
+      "rating": book.rating,
+      "url": book.coverImageURL,
+    });
+  }
+
   //perform search for boo
   Future<void> searchForBook() async {
+    //TODO: check if book is alread in database
+
+    //if not webscrape it
     String query = createQueryTitle();
     String url = "http://10.0.0.31:8000/books/$query";
 
     await get(url).then((response) => {
+          //update the screen
           setState(() {
             var resp = response.body.split("|");
-
             String title = resp[0];
             print(title);
             String author = resp[1];
             var rating = double.parse(resp[2]);
             var pages = int.parse(resp[3]);
             var isbn = int.parse(resp[4]);
+            var bookCoverUrl = "$title.jpg";
 
             Book b = new Book(
                 title: title,
@@ -237,9 +307,13 @@ class SearchListState extends State<SearchList> {
                 pages: pages,
                 rating: rating,
                 isbn: isbn,
-                coverImageURL: "NULL");
+                coverImageURL: bookCoverUrl);
             display = b;
             bookToDisplay = true;
+
+            //update firebase
+            //addBookToFireBaseUser(b);
+            addBookToFireBaseGlobal(b);
           })
         });
   }
