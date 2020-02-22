@@ -20,8 +20,6 @@ class SearchListState extends State<SearchList> {
   //Book to display when searching
   Book display;
   bool bookToDisplay = false;
-  //Text styling for list tiles
-  final TextStyle _itemFont = const TextStyle(fontSize: 18.0);
   //text controller used to clear text form
   final TextEditingController _textController = new TextEditingController();
 

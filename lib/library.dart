@@ -32,6 +32,8 @@ class _LibraryPageState extends State<LibraryPage> {
   List<Book> booklist;
   List<Book> favorited;
 
+  bool bookAdded=false;
+
   //Constructor
   _LibraryPageState({this.booklist, this.favorited});
 
@@ -39,6 +41,12 @@ class _LibraryPageState extends State<LibraryPage> {
   void initState() {
     //imageUrl = booklist[0].coverImageURL;
     super.initState();
+  }
+
+  void addCallback(){
+    setState(() {
+      bookAdded=true;
+    });
   }
 
   @override
@@ -80,6 +88,7 @@ class _LibraryPageState extends State<LibraryPage> {
   open search menu
   */
   void openSearchMenu() {
+    bookAdded=false;
     //open search menu
     Navigator.of((context)).push(
         MaterialPageRoute(builder: (context) => SearchList(uid: widget.uid)));
@@ -89,7 +98,7 @@ class _LibraryPageState extends State<LibraryPage> {
   Get List of books from firebase
   */
   Widget buildBookList() {
-    return new StreamBuilder<QuerySnapshot>(
+      return new StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance
             .collection("users/${widget.uid}/Books")
             .snapshots(),
@@ -171,7 +180,7 @@ class _BookCardState extends State<BookCard> {
   //get cover of the book
   Widget get coverImage {
     return FutureBuilder(
-        future: getCoverImageFuture(book.coverImageURL),
+        future: getCoverImageFuture(this.book.coverImageURL),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             holdingImage = snapshot.data;
