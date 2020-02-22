@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'classes.dart';
 
 /*
@@ -19,9 +20,19 @@ class BookDetailsPage extends StatefulWidget {
 
 */
 class _BookDetailsPageState extends State<BookDetailsPage> {
+  String url;
   @override
   void initState() {
     super.initState();
+    getBookURL();
+  }
+
+  Future<void> getBookURL() async{
+    final ref = FirebaseStorage.instance.ref().child(widget.book.coverImageURL);
+    var _url = await ref.getDownloadURL();
+    setState(() {
+      url = _url;
+    });
   }
 
   @override
@@ -52,7 +63,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                   image: DecorationImage(
                       fit: BoxFit.cover,
                       image: NetworkImage(
-                        widget.book.coverImageURL,
+                        url ?? "",
                         scale: 2.0,
                       )),
                   borderRadius:
