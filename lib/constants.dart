@@ -20,6 +20,7 @@ class Constants{
     ),
     cardTheme: CardTheme(color: lightPrimary),
     appBarTheme: AppBarTheme(
+      brightness: Brightness.light,
       elevation: 0,
       textTheme: TextTheme(
         title: TextStyle(
@@ -44,6 +45,7 @@ class Constants{
     ),
     cardTheme: CardTheme(color: darkPrimary),
     appBarTheme: AppBarTheme(
+      brightness: Brightness.dark,
       elevation: 0,
       textTheme: TextTheme(
         title: TextStyle(
