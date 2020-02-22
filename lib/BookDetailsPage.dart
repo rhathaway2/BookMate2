@@ -85,7 +85,6 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                   "title": widget.book.title,
                   "author": widget.book.author,
                   "pages": widget.book.pages,
-                  "isbn": widget.book.isbn,
                   "rating": widget.book.rating,
                   "url": widget.book.coverImageURL,
                   "userRating": value

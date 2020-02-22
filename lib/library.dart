@@ -126,7 +126,6 @@ class _LibraryPageState extends State<LibraryPage> {
                   title: doc["title"],
                   author: doc['author'],
                   pages: doc['pages'],
-                  isbn: doc['isbn'],
                   rating: doc['rating'],
                   coverImageURL: doc['url'],
                   userRating: doc['userRating'].toDouble())),
@@ -141,7 +140,6 @@ class _LibraryPageState extends State<LibraryPage> {
                     title: doc["title"],
                     author: doc['author'],
                     pages: doc['pages'],
-                    isbn: doc['isbn'],
                     rating: doc['rating'],
                     coverImageURL: doc['url'],
                     userRating: doc['userRating'].toDouble()),
@@ -211,7 +209,7 @@ class _BookCardState extends State<BookCard> {
   //get book card
   Widget get bookCard {
     return Container(
-        width: 400.0,
+        width: 290.0,
         height: 160.0,
         child: Card(
           child: Padding(

@@ -55,7 +55,6 @@ class Book{
   String title;                
   String author;               
   int pages;                   
-  int isbn;                    
   double rating;               
   String coverImageURL;
   double userRating=0.0;
@@ -64,7 +63,6 @@ class Book{
     this.title,
     this.author,               
     this.pages,                
-    this.isbn,                 
     this.rating,               
     this.coverImageURL,
     this.userRating=0.0
