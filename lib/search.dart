@@ -1,6 +1,7 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'classes.dart';
 import 'package:http/http.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,6 +21,7 @@ class SearchListState extends State<SearchList> {
   //Book to display when searching
   Book display;
   bool bookToDisplay = false;
+  bool searching = false;
   //text controller used to clear text form
   final TextEditingController _textController = new TextEditingController();
 
@@ -69,11 +71,13 @@ class SearchListState extends State<SearchList> {
           ),
           key: Key("searchButton"),
           onPressed: () {
+            setState(() {
+              searching = true;
+            });
             FocusScope.of(context).previousFocus(); //dismiss keyboard
-            //search
-            print("Searching");
             searchForBook().then((ret) => {
                   setState(() {
+                    searching = false;
                   })
                 });
           },
@@ -144,7 +148,7 @@ class SearchListState extends State<SearchList> {
                       textColor: Colors.white,
                       onPressed: () {
                         setState(() {
-                          bookToDisplay=false;
+                          bookToDisplay = false;
                           _textController.clear();
                         });
                       },
@@ -156,12 +160,24 @@ class SearchListState extends State<SearchList> {
           ],
         ),
       );
+    } else if (searching == true) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(
+              strokeWidth: 5,
+              backgroundColor: Colors.teal[300],
+            )
+          ],
+        ),
+      );
     } else {
       return Container();
     }
   }
 
-  Future<Widget> getCoverImageFuture(coverURL) async{
+  Future<Widget> getCoverImageFuture(coverURL) async {
     Image img;
     final ref = FirebaseStorage.instance.ref().child(coverURL);
     var url = await ref.getDownloadURL();
@@ -196,9 +212,8 @@ class SearchListState extends State<SearchList> {
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage('images/questionmark.png')
-                ),
+                    fit: BoxFit.cover,
+                    image: AssetImage('images/questionmark.png')),
               ),
             );
           }
@@ -208,7 +223,7 @@ class SearchListState extends State<SearchList> {
   //get Add book card
   Widget buildAddBookCard(Book book) {
     return Container(
-        width: 400.0,
+        width: 290.0,
         height: 160.0,
         child: Card(
           child: Padding(
@@ -258,7 +273,6 @@ class SearchListState extends State<SearchList> {
       "title": book.title,
       "author": book.author,
       "pages": book.pages,
-      "isbn": book.isbn,
       "rating": book.rating,
       "url": book.coverImageURL,
       "userRating": book.userRating,
@@ -273,7 +287,6 @@ class SearchListState extends State<SearchList> {
       "title": book.title,
       "author": book.author,
       "pages": book.pages,
-      "isbn": book.isbn,
       "rating": book.rating,
       "url": book.coverImageURL,
     });
@@ -281,9 +294,6 @@ class SearchListState extends State<SearchList> {
 
   //perform search for boo
   Future<void> searchForBook() async {
-    //TODO: check if book is alread in database
-
-    //if not webscrape it
     String query = createQueryTitle();
     String url = "http://10.0.0.31:8000/books/$query";
 
@@ -292,11 +302,9 @@ class SearchListState extends State<SearchList> {
           setState(() {
             var resp = response.body.split("|");
             String title = resp[0];
-            print(title);
             String author = resp[1];
             var rating = double.parse(resp[2]);
             var pages = int.parse(resp[3]);
-            var isbn = int.parse(resp[4]);
             var bookCoverUrl = "$title.jpg";
 
             Book b = new Book(
@@ -304,13 +312,12 @@ class SearchListState extends State<SearchList> {
                 author: author,
                 pages: pages,
                 rating: rating,
-                isbn: isbn,
                 coverImageURL: bookCoverUrl);
             display = b;
             bookToDisplay = true;
+            searching=false;
 
             //update firebase
-            //addBookToFireBaseUser(b);
             addBookToFireBaseGlobal(b);
           })
         });
