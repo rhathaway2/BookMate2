@@ -44,8 +44,20 @@ class _SplashPageState extends State<SplashPage> {
     return Scaffold(
       body: Center(
         child: Container(
-          child: Text("Loading..."),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
+            child: CircularProgressIndicator(
+              strokeWidth: 5,
+              backgroundColor: Colors.teal[300],
+            ),
+            ),
+            Text("Loading...", style: TextStyle(fontSize: 14.0),)
+          ],
         ),
+      ),
       ),
     );
   }
