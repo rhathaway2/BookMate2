@@ -1,3 +1,4 @@
+import 'package:bookmate2/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -7,8 +8,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 //Class to represent search menu to add items to grocery list
 class SearchList extends StatefulWidget {
-  SearchList({Key key, this.uid}) : super(key: key);
+  SearchList({Key key, this.uid, this.refresh}) : super(key: key);
   final String uid;
+  final void Function() refresh;
 
   @override
   SearchListState createState() => SearchListState();
@@ -125,10 +127,11 @@ class SearchListState extends State<SearchList> {
                       color: Colors.teal[200],
                       textColor: Colors.white,
                       onPressed: () {
-                        setState(() {
-                          addBookToFireBaseUser(display);
-                          bookToDisplay = false;
-                          _textController.clear();
+                        addBookToFireBaseUser(display).then((resp) => {
+                          setState(() {
+                            bookToDisplay = false;
+                            _textController.clear();
+                          })
                         });
                       },
                     ),
@@ -268,7 +271,7 @@ class SearchListState extends State<SearchList> {
   /*
   Add a book to firebase for the current user
   */
-  void addBookToFireBaseUser(Book book) {
+  Future<void> addBookToFireBaseUser(Book book) async{
     Firestore.instance
         .collection("users/${widget.uid}/Books")
         .document((book.title))
@@ -298,7 +301,7 @@ class SearchListState extends State<SearchList> {
   //perform search for boo
   Future<void> searchForBook() async {
     String query = createQueryTitle();
-    String url = "http://10.0.0.31:8000/books/$query";
+    String url = "http://${Constants.IP_ADDR}/books/$query";
 
     await get(url).then((response) => {
           //update the screen
