@@ -148,6 +148,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             endIndent: 10.0,
             color: Colors.black87,
           ),
+          /*
           //review text box
           MaterialButton(
           shape: RoundedRectangleBorder(
@@ -163,6 +164,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
           //Labels the button with search
           child: Text('Review'),
         ),
+        */
         ]));
   }
 }
