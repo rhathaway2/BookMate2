@@ -3,6 +3,7 @@ import 'package:bookmate2/BookDetailsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 //file imports
 import 'classes.dart';
@@ -32,21 +33,24 @@ class _LibraryPageState extends State<LibraryPage> {
   List<Book> booklist;
   List<Book> favorited;
 
-  bool bookAdded=false;
+  bool bookAdded = false;
 
   //Constructor
   _LibraryPageState({this.booklist, this.favorited});
 
   @override
   void initState() {
-    //imageUrl = booklist[0].coverImageURL;
     super.initState();
   }
 
-  void addCallback(){
+  void addCallback() {
     setState(() {
-      bookAdded=true;
+      bookAdded = true;
     });
+  }
+
+  void forceUpdate() {
+    setState(() {});
   }
 
   @override
@@ -88,17 +92,18 @@ class _LibraryPageState extends State<LibraryPage> {
   open search menu
   */
   void openSearchMenu() {
-    bookAdded=false;
+    bookAdded = false;
     //open search menu
-    Navigator.of((context)).push(
-        MaterialPageRoute(builder: (context) => SearchList(uid: widget.uid)));
+    Navigator.of((context)).push(MaterialPageRoute(
+        builder: (context) =>
+            SearchList(uid: widget.uid, refresh: addCallback)));
   }
 
   /*
   Get List of books from firebase
   */
   Widget buildBookList() {
-      return new StreamBuilder<QuerySnapshot>(
+    return new StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance
             .collection("users/${widget.uid}/Books")
             .snapshots(),
@@ -132,19 +137,24 @@ class _LibraryPageState extends State<LibraryPage> {
             }
         });
     return snapshot.data.documents
-        .map((doc) => new Container(
+        .map(
+          (doc) => new Container(
             width: 400.0,
             height: 160.0,
             child: new BookCard(
-                new Book(
-                    title: doc["title"],
-                    author: doc['author'],
-                    pages: doc['pages'],
-                    rating: doc['rating'],
-                    coverImageURL: doc['url'],
-                    userRating: doc['userRating'].toDouble()),
-                false,
-                widget.uid)))
+              new Book(
+                  title: doc["title"],
+                  author: doc['author'],
+                  pages: doc['pages'],
+                  rating: doc['rating'],
+                  coverImageURL: doc['url'],
+                  userRating: doc['userRating'].toDouble()),
+              false,
+              widget.uid,
+              forceUpdate,
+            ),
+          ),
+        )
         .toList();
   }
 }
@@ -154,7 +164,8 @@ class BookCard extends StatefulWidget {
   final Book book; //book displayed on card
   final bool isFavorited;
   final String uid;
-  BookCard(this.book, this.isFavorited, this.uid); //constructor
+  final void Function() refresh;
+  BookCard(this.book, this.isFavorited, this.uid, this.refresh); //constructor
 
   @override
   _BookCardState createState() => _BookCardState(book, isFavorited);
@@ -167,7 +178,7 @@ class _BookCardState extends State<BookCard> {
   Widget holdingImage = new Image(image: AssetImage('images/questionmark.png'));
   _BookCardState(this.book, this.isFavorited);
 
-  Future<Widget> getCoverImageFuture(coverURL) async {
+  Future<Widget> getCoverImageFuture(String coverURL) async {
     Image img;
     final ref = FirebaseStorage.instance.ref().child(coverURL);
     var url = await ref.getDownloadURL();
@@ -176,9 +187,9 @@ class _BookCardState extends State<BookCard> {
   }
 
   //get cover of the book
-  Widget get coverImage {
+  Widget getCoverImage() {
     return FutureBuilder(
-        future: getCoverImageFuture(this.book.coverImageURL),
+        future: getCoverImageFuture(widget.book.coverImageURL),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             holdingImage = snapshot.data;
@@ -209,7 +220,7 @@ class _BookCardState extends State<BookCard> {
   //get book card
   Widget get bookCard {
     return Container(
-        width: 290.0,
+        width: MediaQuery.of(context).size.width - 35,
         height: 160.0,
         child: Card(
           child: Padding(
@@ -260,10 +271,35 @@ class _BookCardState extends State<BookCard> {
         ));
   }
 
+  //remove a book from firebase
+  Future<void> removeBook(Book b) async {
+    await Firestore.instance
+        .collection("users/${widget.uid}/Books")
+        .document((b.title))
+        .delete()
+        .then((resp) => {widget.refresh()});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 3.0),
+      padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 3.0),
+      child: Slidable(
+        actionPane: SlidableDrawerActionPane(),
+        actionExtentRatio: 0.25,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(left: 5.0),
+            child: IconSlideAction(
+              caption: "Delete",
+              color: Colors.red,
+              icon: Icons.delete,
+              onTap: () {
+                removeBook(widget.book);
+              },
+            ),
+          )
+        ],
         child: GestureDetector(
           onTap: () {
             Navigator.of((context)).push(MaterialPageRoute(
@@ -271,14 +307,17 @@ class _BookCardState extends State<BookCard> {
                     BookDetailsPage(uid: widget.uid, book: widget.book)));
           },
           child: Container(
-              height: 154.0,
-              width: 400.0,
-              child: Stack(
-                children: <Widget>[
-                  Positioned(left: 70.0, child: bookCard),
-                  Positioned(top: 5.0, child: coverImage),
-                ],
-              )),
-        ));
+            height: 154.0,
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
+              children: <Widget>[
+                Positioned(left: 70.0, child: bookCard),
+                Positioned(top: 5.0, child: getCoverImage()),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
