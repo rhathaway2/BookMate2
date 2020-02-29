@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'home.dart';
@@ -10,17 +11,19 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
+  bool _loggingIn = false;
 
   @override
   initState() {
+    super.initState();
     emailInputController = new TextEditingController();
     pwdInputController = new TextEditingController();
-    super.initState();
   }
+
 
   String emailValidator(String value) {
     Pattern pattern =
@@ -44,26 +47,26 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-            constraints: BoxConstraints.expand(),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("images/bookshelf.png"),
-                colorFilter: new ColorFilter.mode(
-                    Colors.black.withOpacity(1.0), BlendMode.dstATop),
-                fit: BoxFit.cover,
-              ),
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/bookshelf.png"),
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(1.0), BlendMode.dstATop),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: new Theme(
+            data: new ThemeData(
+              brightness: Brightness.light,
+              primaryColor: Colors.white,
+              primaryColorDark: Colors.white,
+              primaryColorLight: Colors.white,
             ),
-            padding: const EdgeInsets.all(20.0),
-            child: SingleChildScrollView(
-                child: new Theme(
-                  data: new ThemeData(
-                    brightness: Brightness.light,
-                    primaryColor: Colors.white,
-                    primaryColorDark: Colors.white,
-                    primaryColorLight: Colors.white,
-                  ), 
-                  child: Form(
+            child: Form(
               key: _loginFormKey,
               child: Column(
                 children: <Widget>[
@@ -76,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                                 fontSize: 65.0,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.teal[300],
+                                color: Colors.teal[200],
                                 fontFamily: 'Lobster'))),
                   ),
                   Padding(
@@ -129,53 +132,71 @@ class _LoginPageState extends State<LoginPage> {
                       validator: pwdValidator,
                     ),
                   ),
-
                   Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: ButtonTheme(
-                          minWidth: 400.0,
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
+                    child: new InkWell(
+                      onTap: () {
+                        if (_loginFormKey.currentState.validate()) {
+                          setState(() {
+                            _loggingIn = true;
+                          });
+                          //_playAnimation();
+                          FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                                  email: emailInputController.text,
+                                  password: pwdInputController.text)
+                              .then((currentUser) => Firestore.instance
+                                  .collection("users")
+                                  .document(currentUser.user.uid)
+                                  .get()
+                                  .then((DocumentSnapshot result) =>
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => HomePage(
+                                                    user: result,
+                                                    uid: currentUser.user.uid,
+                                                  ))))
+                                  .catchError((err) => print(err)))
+                              .catchError((err) => print(err));    
+                        }
+                      },
+                      child: new AnimatedContainer(
+                          duration: Duration(milliseconds: 1000),
+                          width: _loggingIn==false ? 400.0 : 70,
                           height: 50.0,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: Text("Login"),
-                            color: Colors.teal[200],
-                            textColor: Colors.white,
-                            onPressed: () {
-                              if (_loginFormKey.currentState.validate()) {
-                                FirebaseAuth.instance
-                                    .signInWithEmailAndPassword(
-                                        email: emailInputController.text,
-                                        password: pwdInputController.text)
-                                    .then((currentUser) => Firestore.instance
-                                        .collection("users")
-                                        .document(currentUser.user.uid)
-                                        .get()
-                                        .then((DocumentSnapshot result) =>
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        HomePage(
-                                                          user: result,
-                                                          uid: currentUser
-                                                              .user.uid,
-                                                        ))))
-                                        .catchError((err) => print(err)))
-                                    .catchError((err) => print(err));
-                              }
-                            },
-                          ))),
-                  Text("Don't have an account yet?",style: TextStyle(color: Colors.white)),
+                          alignment: FractionalOffset.center,
+                          decoration: new BoxDecoration(
+                            color: const Color(0xFF80CBC4),
+                            borderRadius: new BorderRadius.all(
+                                const Radius.circular(30.0)),
+                          ),
+                          child: _loggingIn==false
+                              ? new Text("Sign In",)
+                              : new CircularProgressIndicator(
+                                  valueColor: new AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                )),
+                    ),
+                  ),
+
+                  Text("Don't have an account yet?",
+                      style: TextStyle(color: Colors.white)),
                   FlatButton(
-                    child: Text("Register here!", style: TextStyle(color: Colors.white),),
+                    child: Text(
+                      "Register here!",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     onPressed: () {
                       Navigator.pushNamed(context, "/register");
                     },
                   )
                 ],
               ),
-            )))));
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

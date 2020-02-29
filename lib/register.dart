@@ -17,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
   TextEditingController confirmPwdInputController;
+  bool _registering = false;
 
   @override
   initState() {
@@ -82,22 +83,22 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.person, color: Colors.white),
-                          focusColor: Colors.white,
-                          labelText: 'First Name',
-                          labelStyle: TextStyle(color: Colors.white),
-                          hintText: "John",
-                          hintStyle: TextStyle(color: Colors.white),
+                        prefixIcon: Icon(Icons.person, color: Colors.white),
+                        focusColor: Colors.white,
+                        labelText: 'First Name',
+                        labelStyle: TextStyle(color: Colors.white),
+                        hintText: "John",
+                        hintStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(30.0)),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(30.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.teal[300]),
-                              borderRadius: BorderRadius.circular(30.0)),
-                        ),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(30.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.teal[300]),
+                            borderRadius: BorderRadius.circular(30.0)),
+                      ),
                       controller: firstNameInputController,
                       validator: (value) {
                         if (value.length < 3) {
@@ -109,24 +110,24 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: EdgeInsets.all(5.0),
                     child: TextFormField(
-                      style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.person, color: Colors.white),
-                            focusColor: Colors.white,
-                            labelText: 'Last Name',
-                            labelStyle: TextStyle(color: Colors.white),
-                            hintText: "Doe",
-                            hintStyle: TextStyle(color: Colors.white),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(30.0)),
-                            border: OutlineInputBorder(
+                          prefixIcon: Icon(Icons.person, color: Colors.white),
+                          focusColor: Colors.white,
+                          labelText: 'Last Name',
+                          labelStyle: TextStyle(color: Colors.white),
+                          hintText: "Doe",
+                          hintStyle: TextStyle(color: Colors.white),
+                          enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.circular(30.0)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.teal[300]),
-                                borderRadius: BorderRadius.circular(30.0)),
-                          ),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(30.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.teal[300]),
+                              borderRadius: BorderRadius.circular(30.0)),
+                        ),
                         controller: lastNameInputController,
                         validator: (value) {
                           if (value.length < 3) {
@@ -139,22 +140,22 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.email, color: Colors.white),
-                          focusColor: Colors.white,
-                          labelText: 'Email',
-                          labelStyle: TextStyle(color: Colors.white),
-                          hintText: "john.doe@gmail.com",
-                          hintStyle: TextStyle(color: Colors.white),
+                        prefixIcon: Icon(Icons.email, color: Colors.white),
+                        focusColor: Colors.white,
+                        labelText: 'Email',
+                        labelStyle: TextStyle(color: Colors.white),
+                        hintText: "john.doe@gmail.com",
+                        hintStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(30.0)),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white38),
-                              borderRadius: BorderRadius.circular(30.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.teal[200]),
-                              borderRadius: BorderRadius.circular(30.0)),
-                        ),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white38),
+                            borderRadius: BorderRadius.circular(30.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.teal[200]),
+                            borderRadius: BorderRadius.circular(30.0)),
+                      ),
                       controller: emailInputController,
                       keyboardType: TextInputType.emailAddress,
                       validator: emailValidator,
@@ -165,22 +166,22 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.lock, color: Colors.white),
-                          focusColor: Colors.white,
-                          labelText: 'Password',
-                          labelStyle: TextStyle(color: Colors.white),
-                          hintText: "********",
-                          hintStyle: TextStyle(color: Colors.white),
+                        prefixIcon: Icon(Icons.lock, color: Colors.white),
+                        focusColor: Colors.white,
+                        labelText: 'Password',
+                        labelStyle: TextStyle(color: Colors.white),
+                        hintText: "********",
+                        hintStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(30.0)),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white38),
-                              borderRadius: BorderRadius.circular(30.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.teal[200]),
-                              borderRadius: BorderRadius.circular(30.0)),
-                        ),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white38),
+                            borderRadius: BorderRadius.circular(30.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.teal[200]),
+                            borderRadius: BorderRadius.circular(30.0)),
+                      ),
                       controller: pwdInputController,
                       obscureText: true,
                       validator: pwdValidator,
@@ -191,150 +192,158 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextFormField(
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.lock, color: Colors.white),
-                          labelText: 'Confirm Password',
-                          labelStyle: TextStyle(color: Colors.white),
-                          hintText: "********",
-                          hintStyle: TextStyle(color: Colors.white),
+                        prefixIcon: Icon(Icons.lock, color: Colors.white),
+                        labelText: 'Confirm Password',
+                        labelStyle: TextStyle(color: Colors.white),
+                        hintText: "********",
+                        hintStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(30.0)),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white38),
-                              borderRadius: BorderRadius.circular(30.0)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.teal[200]),
-                              borderRadius: BorderRadius.circular(30.0)),
-                        ),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white38),
+                            borderRadius: BorderRadius.circular(30.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.teal[200]),
+                            borderRadius: BorderRadius.circular(30.0)),
+                      ),
                       controller: confirmPwdInputController,
                       obscureText: true,
                       validator: pwdValidator,
                     ),
                   ),
                   Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: ButtonTheme(
-                          minWidth: 400.0,
-                          height: 50.0,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: Text("Register"),
-                            color: Colors.teal[200],
-                            textColor: Colors.white,
-                            onPressed: () {
-                              if (_registerFormKey.currentState.validate()) {
-                                if (pwdInputController.text ==
-                                    confirmPwdInputController.text) {
-                                  FirebaseAuth.instance
-                                      .createUserWithEmailAndPassword(
-                                          email: emailInputController.text,
-                                          password: pwdInputController.text)
-                                      .then((currentUser) => Firestore.instance
-                                          .collection("users")
-                                          .document(currentUser.user.uid)
-                                          .setData({
-                                            "uid": currentUser.user.uid,
-                                            "fname":
-                                                firstNameInputController.text,
-                                            "surname":
-                                                lastNameInputController.text,
-                                            "email": emailInputController.text,
-                                          })
-                                          .then((result) => {
-                                                Firestore.instance
-                                                    .collection("users")
-                                                    .document(
-                                                        currentUser.user.uid)
-                                                    .get()
-                                                    .then((result) => {
-                                                          Navigator
-                                                              .pushAndRemoveUntil(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              HomePage(
-                                                                                user: result,
-                                                                                uid: currentUser.user.uid,
-                                                                              )),
-                                                                  (_) => false),
-                                                          //add initial collections for user
-                                                          Firestore.instance
-                                                              .collection(
-                                                                  "users/${currentUser.user.uid}/Books")
-                                                              .document(
-                                                                  "initializer")
-                                                              .setData({}),
-                                                          Firestore.instance
-                                                              .collection(
-                                                                  "users/${currentUser.user.uid}/Notes")
-                                                              .document(
-                                                                  "initializer")
-                                                              .setData({}),
-                                                          Firestore.instance
-                                                              .collection(
-                                                                  "users/${currentUser.user.uid}/Reviews")
-                                                              .document(
-                                                                  "initializer")
-                                                              .setData({}),
-                                                          Firestore.instance
-                                                              .collection(
-                                                                  "users/${currentUser.user.uid}/Posts")
-                                                              .document(
-                                                                  "Created Account")
-                                                              .setData({
-                                                            "Date":
-                                                                DateTime.now(),
-                                                          }),
-                                                          Firestore.instance
-                                                              .collection(
-                                                                  "users/${currentUser.user.uid}/Friends")
-                                                              .document(
-                                                                  "initializer")
-                                                              .setData({}),
+                    padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                    child: new InkWell(
+                      onTap: () {
+                        if (_registerFormKey.currentState.validate()) {
+                          if (pwdInputController.text ==
+                              confirmPwdInputController.text) {
+                            setState(() {
+                              _registering = true;
+                            });
+                            FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                                    email: emailInputController.text,
+                                    password: pwdInputController.text)
+                                .then((currentUser) => Firestore.instance
+                                    .collection("users")
+                                    .document(currentUser.user.uid)
+                                    .setData({
+                                      "uid": currentUser.user.uid,
+                                      "fname": firstNameInputController.text,
+                                      "surname": lastNameInputController.text,
+                                      "email": emailInputController.text,
+                                    })
+                                    .then((result) => {
+                                          Firestore.instance
+                                              .collection("users")
+                                              .document(currentUser.user.uid)
+                                              .get()
+                                              .then((result) => {
+                                                    Navigator
+                                                        .pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        HomePage(
+                                                                          user:
+                                                                              result,
+                                                                          uid: currentUser
+                                                                              .user
+                                                                              .uid,
+                                                                        )),
+                                                            (_) => false),
+                                                    //add initial collections for user
+                                                    Firestore.instance
+                                                        .collection(
+                                                            "users/${currentUser.user.uid}/Books")
+                                                        .document("initializer")
+                                                        .setData({}),
+                                                    Firestore.instance
+                                                        .collection(
+                                                            "users/${currentUser.user.uid}/Notes")
+                                                        .document("initializer")
+                                                        .setData({}),
+                                                    Firestore.instance
+                                                        .collection(
+                                                            "users/${currentUser.user.uid}/Reviews")
+                                                        .document("initializer")
+                                                        .setData({}),
+                                                    Firestore.instance
+                                                        .collection(
+                                                            "users/${currentUser.user.uid}/Posts")
+                                                        .document(
+                                                            "Created Account")
+                                                        .setData({
+                                                      "Date": DateTime.now(),
+                                                    }),
+                                                    Firestore.instance
+                                                        .collection(
+                                                            "users/${currentUser.user.uid}/Friends")
+                                                        .document("initializer")
+                                                        .setData({}),
 
-                                                          //clear inputs
-                                                          firstNameInputController
-                                                              .clear(),
-                                                          lastNameInputController
-                                                              .clear(),
-                                                          emailInputController
-                                                              .clear(),
-                                                          pwdInputController
-                                                              .clear(),
-                                                          confirmPwdInputController
-                                                              .clear()
-                                                        })
-                                              })
-                                          .catchError((err) => print(err)))
-                                      .catchError((err) => print(err));
-                                } else {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text("Error"),
-                                          content: Text(
-                                              "The passwords do not match"),
-                                          actions: <Widget>[
-                                            FlatButton(
-                                              child: Text("Close"),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            )
-                                          ],
-                                        );
-                                      });
-                                }
-                              }
-                            },
-                          ))),
-                  Text("Already have an account?", style: TextStyle(color:Colors.white),),
+                                                    //clear inputs
+                                                    firstNameInputController
+                                                        .clear(),
+                                                    lastNameInputController
+                                                        .clear(),
+                                                    emailInputController
+                                                        .clear(),
+                                                    pwdInputController.clear(),
+                                                    confirmPwdInputController
+                                                        .clear()
+                                                  })
+                                        })
+                                    .catchError((err) => print(err)))
+                                .catchError((err) => print(err));
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text("Error"),
+                                    content: Text("The passwords do not match"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text("Close"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  );
+                                });
+                          }
+                        }
+                      },
+                      child: new AnimatedContainer(
+                          duration: Duration(milliseconds: 1000),
+                          width: _registering == false ? 400.0 : 70,
+                          height: 50.0,
+                          alignment: FractionalOffset.center,
+                          decoration: new BoxDecoration(
+                            color: const Color(0xFF80CBC4),
+                            borderRadius: new BorderRadius.all(
+                                const Radius.circular(30.0)),
+                          ),
+                          child: _registering == false
+                              ? new Text("Register")
+                              : new CircularProgressIndicator(
+                                  valueColor: new AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                )),
+                    ),
+                  ),
+                  Text(
+                    "Already have an account?",
+                    style: TextStyle(color: Colors.white),
+                  ),
                   FlatButton(
-                    child: Text("Login here!", style: TextStyle(color:Colors.white)),
+                    child: Text("Login here!",
+                        style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       Navigator.pop(context);
                     },
