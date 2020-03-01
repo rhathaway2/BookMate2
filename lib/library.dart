@@ -66,8 +66,8 @@ class _LibraryPageState extends State<LibraryPage> {
             openSearchMenu();
           },
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      /*  bottomNavigationBar: BottomAppBar(
           child: new Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,6 +85,7 @@ class _LibraryPageState extends State<LibraryPage> {
             ],
           ),
         ),
+        */
         body: buildBookList());
   }
 
@@ -196,7 +197,7 @@ class _BookCardState extends State<BookCard> {
             return Container(
               padding: EdgeInsets.only(left: 2),
               width: 100.0,
-              height: 150.0,
+              height: 160.0,
               child: snapshot.data,
               /*
               decoration: BoxDecoration(
@@ -210,7 +211,7 @@ class _BookCardState extends State<BookCard> {
             return Container(
               padding: EdgeInsets.only(left: 2),
               width: 100.0,
-              height: 150.0,
+              height: 160.0,
               child: holdingImage,
             );
           }
@@ -220,13 +221,13 @@ class _BookCardState extends State<BookCard> {
   //get book card
   Widget get bookCard {
     return Container(
-        width: MediaQuery.of(context).size.width - 35,
+        width: MediaQuery.of(context).size.width - 70,
         height: 160.0,
         child: Card(
           child: Padding(
             padding: const EdgeInsets.only(
-              top: 1.0,
-              bottom: 1.0,
+              //top: 1.0,
+              //bottom: 1.0,
               left: 35.0,
             ),
             child: Column(
@@ -307,7 +308,7 @@ class _BookCardState extends State<BookCard> {
                     BookDetailsPage(uid: widget.uid, book: widget.book)));
           },
           child: Container(
-            height: 154.0,
+            height: 160.0,
             width: MediaQuery.of(context).size.width,
             child: Stack(
               children: <Widget>[
