@@ -5,6 +5,7 @@ import 'register.dart';
 import 'activity.dart';
 import 'social.dart';
 import 'login.dart';
+import 'profile.dart';
 import 'constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   //tab controller
   TabController controlla ;
 
-  final List<String> _title = ["Activity", "Friends", "Library"];
+  final List<String> _title = ["Dashboard", "Friends", "Library", "Profile"];
 
   _HomePageState({this.darkTheme});
 
@@ -57,6 +58,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ActivityPage(uid: widget.uid, user: widget.user, dkey: _drawerKey),
       SocialPage(uid: widget.uid, dkey: _drawerKey),
       LibraryPage(uid: widget.uid, dkey: _drawerKey),
+      ProfilePage(uid: widget.uid, dkey: _drawerKey),
     ];
 
     return MaterialApp(
@@ -65,14 +67,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       darkTheme: Constants.darkTheme,
       themeMode: (darkTheme==true) ? ThemeMode.dark : ThemeMode.light,
       home: DefaultTabController(
-        length: 3,
+        length: 4,
         child: Scaffold(
           key: _drawerKey,
           drawer: new SideDrawer(user: widget.user, darkTheme: darkTheme, toggleDarkTheme: toggleDarkMode, controlla: controlla, update: update),
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            leading: null,
-            title: Center(child: Text(_title[controlla.index])),            
+            leading: IconButton(
+                icon: Icon(Icons.menu),
+                onPressed: () {
+                  _drawerKey.currentState.openDrawer();
+                },
+              ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(_title[controlla.index]),
+              ]
+            ),
           ),
           body: TabBarView(
             physics: NeverScrollableScrollPhysics(),
@@ -129,7 +141,8 @@ class SideDrawer extends StatelessWidget {
               leading: Icon(Icons.person),
               title: Text("Profile"),
               onTap: () {
-                //do stuff
+                controlla.animateTo(3);
+                update();
                 //exit drawer
                 Navigator.of(context).pop();
               }),
