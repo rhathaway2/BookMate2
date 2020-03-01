@@ -31,18 +31,6 @@ class _SocialPageState extends State<SocialPage>{
   Widget build(BuildContext context){
     return Scaffold(
       /*
-      body: Visibility(
-              visible: searchVisible,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal:20),
-                child: SearchBar(
-                  onSearch: null,
-                  onItemFound: null,
-                  cancellationText: Text("Cancel"),
-                ),
-              ),
-              replacement: Container(),
-            ), */
       floatingActionButton: FloatingActionButton.extended(
           elevation: 4.0,
           backgroundColor: Colors.teal[200],
@@ -72,6 +60,63 @@ class _SocialPageState extends State<SocialPage>{
             ],
           ),
         ),
+        */
+        body: buildFriendsList(),
+    );
+  }
+
+  /*
+  Get List of books from firebase
+  */
+  Widget buildFriendsList() {
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance
+            .collection("users/${widget.uid}/Friends")
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return new ListTile(
+              leading: Icon(Icons.mood_bad),
+              title: Text("You have no friends"),
+              subtitle: Text("Unlucky"),
+            );
+          }
+          return new ListView(children: getFriendsList(snapshot));
+        });
+  }
+
+  /*
+  Map firebase snapshop to BookCards
+  */
+  getFriendsList(AsyncSnapshot<QuerySnapshot> snapshot) {
+    return snapshot.data.documents
+        .map(
+          (doc) => new Container(
+            child: FriendCard(uid: widget.uid),
+          ),
+        )
+        .toList();
+  }
+}
+
+
+class FriendCard extends StatefulWidget{
+  final String uid;
+
+  FriendCard({this.uid});
+
+  @override
+  _FriendCardState createState() => _FriendCardState();
+}
+
+class _FriendCardState extends State<FriendCard>{
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+
     );
   }
 }
+
+
