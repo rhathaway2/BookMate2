@@ -322,7 +322,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: new AnimatedContainer(
                           duration: Duration(milliseconds: 1000),
                           width: _registering == false ? 400.0 : 70,
-                          height: 50.0,
+                          height: 60.0,
                           alignment: FractionalOffset.center,
                           decoration: new BoxDecoration(
                             color: const Color(0xFF80CBC4),
