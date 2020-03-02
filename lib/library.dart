@@ -288,7 +288,7 @@ class _BookCardState extends State<BookCard> {
       child: Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
-        actions: <Widget>[
+        secondaryActions: <Widget>[
           Padding(
             padding: EdgeInsets.only(left: 5.0),
             child: IconSlideAction(
