@@ -192,7 +192,7 @@ class WeekBarGraphState extends State<WeekBarGraph> {
           child: Align(
             alignment: Alignment.topRight,
             child: IconButton(
-                icon: Icon(colapsed ? Icons.arrow_left : Icons.arrow_drop_down,
+                icon: Icon(colapsed ? Icons.arrow_drop_down : Icons.arrow_drop_up,
                     size: 45.0),
                 onPressed: () {
                   setState(() {
@@ -238,12 +238,24 @@ class WeekBarGraphState extends State<WeekBarGraph> {
           child: Align(
             alignment: Alignment.topRight,
             child: IconButton(
-                icon: Icon(colapsed ? Icons.arrow_left : Icons.arrow_drop_down,
+                icon: Icon(colapsed ? Icons.arrow_drop_down : Icons.arrow_drop_up,
                     size: 45.0),
                 onPressed: () {
                   setState(() {
                     colapsed = !colapsed;
                   });
+                }),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 65.0),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+                icon: Icon(Icons.add,
+                    size: 45.0),
+                onPressed: () {
+                  
                 }),
           ),
         ),
