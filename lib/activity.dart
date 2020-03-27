@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'classes.dart';
+import 'activity_page_widgets.dart';
+
 
 /*
 
@@ -22,52 +24,20 @@ class ActivityPage extends StatefulWidget {
 
 */
 class _ActivityPageState extends State<ActivityPage> {
-  TextEditingController postTitleInputController;
-  TextEditingController postDescripInputController;
-  bool searchVisible = false;
-
-  @override
-  void initState() {
-    postTitleInputController = new TextEditingController();
-    postDescripInputController = new TextEditingController();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.teal[200],
-        elevation: 4.0,
-        icon: const Icon(Icons.add),
-        label: const Text('Create Post'),
-        onPressed: () {},
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        child: new Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                widget.dkey.currentState.openDrawer();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {},
-            )
-          ],
-        ),
-      ),
-      */
-      //body: buildActivityList(),
       body: Column(
         children: <Widget>[
           WeekActivity(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              FriendStatus(uid: widget.uid,),
+              BookStatus(uid: widget.uid,)
+            ],
+          ),
         ],
       ),
     );
