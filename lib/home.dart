@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ActivityPage(uid: widget.uid, user: widget.user, dkey: _drawerKey),
       SocialPage(uid: widget.uid, dkey: _drawerKey),
       LibraryPage(uid: widget.uid, dkey: _drawerKey),
-      ProfilePage(uid: widget.uid, dkey: _drawerKey),
+      ProfilePage(uid: widget.uid, dkey: _drawerKey, user: widget.user),
     ];
 
     return MaterialApp(
