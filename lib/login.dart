@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                 const Radius.circular(30.0)),
                           ),
                           child: _loggingIn==false
-                              ? new Text("Sign In",)
+                              ? new Text("Sign In", style: TextStyle(fontSize:20.0))
                               : new CircularProgressIndicator(
                                   valueColor: new AlwaysStoppedAnimation<Color>(
                                       Colors.white),

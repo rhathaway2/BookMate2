@@ -68,3 +68,20 @@ class Book{
     this.userRating=0.0
   });
 }
+
+
+class Friend{
+  String fname;
+  String lname;
+  String uid;
+  String pictureUrl;
+  int bookCount;
+
+  Friend({
+    this.fname,
+    this.lname,
+    this.uid,
+    this.pictureUrl,
+    this.bookCount
+  });
+}

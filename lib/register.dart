@@ -258,19 +258,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                                     //add initial collections for user
                                                     Firestore.instance
                                                         .collection(
-                                                            "users/${currentUser.user.uid}/Books")
-                                                        .document("initializer")
-                                                        .setData({}),
+                                                            "users/${currentUser.user.uid}/Books"),
                                                     Firestore.instance
                                                         .collection(
-                                                            "users/${currentUser.user.uid}/Notes")
-                                                        .document("initializer")
-                                                        .setData({}),
+                                                            "users/${currentUser.user.uid}/Notes"),
                                                     Firestore.instance
                                                         .collection(
-                                                            "users/${currentUser.user.uid}/Reviews")
-                                                        .document("initializer")
-                                                        .setData({}),
+                                                            "users/${currentUser.user.uid}/Reviews"),
                                                     Firestore.instance
                                                         .collection(
                                                             "users/${currentUser.user.uid}/Posts")
@@ -281,10 +275,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                                     }),
                                                     Firestore.instance
                                                         .collection(
-                                                            "users/${currentUser.user.uid}/Friends")
-                                                        .document("initializer")
-                                                        .setData({}),
-
+                                                            "users/${currentUser.user.uid}/Friends"),
+                                                    Firestore.instance.collection("allUsers")
+                                                    .document(firstNameInputController.text+" "+lastNameInputController.text)
+                                                    .setData({
+                                                      "fname": firstNameInputController.text,
+                                                      "surname": lastNameInputController.text,
+                                                      "uid": currentUser.user.uid,
+                                                    }),
                                                     //clear inputs
                                                     firstNameInputController
                                                         .clear(),
@@ -330,7 +328,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 const Radius.circular(30.0)),
                           ),
                           child: _registering == false
-                              ? new Text("Register")
+                              ? new Text("Register", style: TextStyle(fontSize:20.0))
                               : new CircularProgressIndicator(
                                   valueColor: new AlwaysStoppedAnimation<Color>(
                                       Colors.white),
