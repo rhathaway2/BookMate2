@@ -31,6 +31,7 @@ class _ActivityPageState extends State<ActivityPage> {
       body: Column(
         children: <Widget>[
           WeekActivity(),
+          CurrentBookCard(widget.uid),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
