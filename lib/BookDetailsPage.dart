@@ -21,13 +21,42 @@ class BookDetailsPage extends StatefulWidget {
 */
 class _BookDetailsPageState extends State<BookDetailsPage> {
   String url;
+  bool setAsCurrent = false;
   @override
   void initState() {
     super.initState();
     getBookURL();
+    checkStatus();
   }
 
-  Future<void> getBookURL() async{
+  /*
+  Checks whether or not the book
+  is set as the book being currently read
+  */
+  Future<void> checkStatus() async {
+    Firestore.instance.collection("users/${widget.uid}/Current").document("CurrentBook").get().then((book) => {
+      if(book["title"] == widget.book.title){
+        setState(() {
+          setAsCurrent = true;
+        }),
+      }
+    });
+  }
+
+  //Sets the book to currently being read on Firebase
+  Future<void> setBookToCurrent() async{
+    Firestore.instance.collection("users/${widget.uid}/Current").document("CurrentBook").setData({
+      "author": widget.book.author,
+      "pages": widget.book.pages,
+      "rating": widget.book.rating,
+      "title": widget.book.title,
+      "url": widget.book.coverImageURL,
+      "userRating": widget.book.userRating,
+    });
+  }
+
+  //Gets the url to the image of  the book cover
+  Future<void> getBookURL() async {
     final ref = FirebaseStorage.instance.ref().child(widget.book.coverImageURL);
     var _url = await ref.getDownloadURL();
     setState(() {
@@ -142,29 +171,29 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       ))),
                 ],
               )),
-             Divider(
+          Divider(
             height: 25.0,
             indent: 10.0,
             endIndent: 10.0,
             color: Colors.black87,
           ),
-          /*
-          //review text box
-          MaterialButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Set As Current: ", style: TextStyle(fontSize: 18.0)),
+                Switch(
+                  value: setAsCurrent,
+                  onChanged: (value) {
+                    setBookToCurrent();
+                    setState(() {
+                      setAsCurrent = value;
+                    });
+                  },
+                ),
+              ],
+            ),
           ),
-          key: Key("reviewButton"),
-          onPressed: () {
-            
-          },
-          elevation: 5,
-          minWidth: 200,
-          color: Colors.teal[200],
-          //Labels the button with search
-          child: Text('Review'),
-        ),
-        */
         ]));
   }
 }
