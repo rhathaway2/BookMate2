@@ -28,7 +28,11 @@ class _ActivityPageState extends State<ActivityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+        child:Column(
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           WeekActivity(),
           CurrentBookCard(widget.uid),
@@ -40,7 +44,7 @@ class _ActivityPageState extends State<ActivityPage> {
             ],
           ),
         ],
-      ),
+      ),),),
     );
   }
 }
