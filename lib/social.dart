@@ -266,6 +266,9 @@ class _FriendCardState extends State<FriendCard> {
                     } 
                     else if(widget.flag == 1) {
                       //vuew profile
+                      Navigator.of((context)).push(MaterialPageRoute(
+                        builder: (context) =>
+                          FriendProfilePage(uid: widget.friend.uid)));
                     }
                   },
                 ),
@@ -273,6 +276,95 @@ class _FriendCardState extends State<FriendCard> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class FriendProfilePage extends StatefulWidget{
+  final String uid;
+
+  FriendProfilePage({this.uid});
+
+  @override
+  FriendProfilePageState createState() => FriendProfilePageState(); 
+}
+
+
+class FriendProfilePageState extends State<FriendProfilePage>{
+  DocumentSnapshot user;
+  int f_count, b_count;
+
+  @override
+  void initState(){
+    super.initState();
+    Firestore.instance.collection("users").document(widget.uid).get().then((DocumentSnapshot result) => {
+      user = result,
+      update()
+    });
+    Firestore.instance.collection("users/${widget.uid}/Friends").getDocuments().then((myDocuments) => {
+      f_count = myDocuments.documents.length,
+      update()
+    });
+    Firestore.instance.collection("users/${widget.uid}/Books").getDocuments().then((myDocuments) => {
+      b_count = myDocuments.documents.length,
+      update()
+    });
+  }
+
+  void update(){
+    setState(() {
+      //update
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if(user == null || f_count==null || b_count==null){
+      return SizedBox(
+        height: MediaQuery.of(context).size.height
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(
+          bottomOpacity: 0.0,
+          elevation: 0.0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.teal[200],
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          automaticallyImplyLeading: false,
+          //backgroundColor: Colors.white,
+        ),
+      body: Column(
+        children: <Widget>[
+          Padding(padding: EdgeInsets.only(top: 20.0),),
+          Center(
+            child: CircleAvatar(
+              backgroundColor: Colors.teal[200],
+              minRadius: 100.0,
+              child: Text(
+                "${user["fname"][0]}${user["surname"][0]}",
+                style: TextStyle(fontSize: 80.0, color: Colors.white),
+              ),
+            ),
+          ),
+          Padding(padding: EdgeInsets.only(top: 10.0),),
+          Center(
+            child: Text(
+              "${user["fname"]} ${user["surname"]}",
+                style: TextStyle(fontSize: 30.0),
+            ),
+          ),
+          Padding(padding: EdgeInsets.only(top: 10.0),),
+          Center(
+            child: Text("$f_count Friends  |  $b_count Books")
+          ),
+        ],
       ),
     );
   }
