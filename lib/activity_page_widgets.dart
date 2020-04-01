@@ -249,6 +249,5 @@ class _CurrentBookCardState extends State<CurrentBookCard> {
         ),
       ),
     );
-      
   }
 }
