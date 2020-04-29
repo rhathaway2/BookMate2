@@ -8,9 +8,10 @@ import 'classes.dart';
 
 */
 class BookDetailsPage extends StatefulWidget {
-  BookDetailsPage({Key key, this.uid, this.book}) : super(key: key);
+  BookDetailsPage({Key key, this.uid, this.book, this.starsEditable}) : super(key: key);
   final String uid;
   final Book book;
+  final bool starsEditable;
 
   @override
   _BookDetailsPageState createState() => _BookDetailsPageState();
@@ -103,21 +104,28 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
           SmoothStarRating(
               allowHalfRating: true,
               onRatingChanged: (value) {
-                //update display rating
-                widget.book.userRating = value;
-                setState(() {});
-                //update user rating in firebase
-                Firestore.instance
-                    .collection("users/${widget.uid}/Books")
-                    .document((widget.book.title))
-                    .setData({
-                  "title": widget.book.title,
-                  "author": widget.book.author,
-                  "pages": widget.book.pages,
-                  "rating": widget.book.rating,
-                  "url": widget.book.coverImageURL,
-                  "userRating": value
-                });
+                if(widget.starsEditable){
+                  //update display rating
+                  widget.book.userRating = value;
+                  setState(() {});
+                  //update user rating in firebase
+                  Firestore.instance
+                      .collection("users/${widget.uid}/Books")
+                      .document((widget.book.title))
+                      .setData({
+                    "title": widget.book.title,
+                    "author": widget.book.author,
+                    "pages": widget.book.pages,
+                    "rating": widget.book.rating,
+                    "url": widget.book.coverImageURL,
+                    "userRating": value
+                  });
+                }
+                else{
+                  setState(() {
+                    widget.book.userRating = widget.book.userRating;
+                  });
+                }
               },
               starCount: 5,
               rating: widget.book.userRating,
@@ -177,6 +185,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             endIndent: 10.0,
             color: Colors.black87,
           ),
+          !widget.starsEditable ? Container() :
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

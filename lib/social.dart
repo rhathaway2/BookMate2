@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'classes.dart';
+import 'library.dart';
 
 /*
 
@@ -32,25 +32,28 @@ class _SocialPageState extends State<SocialPage> {
     getMe();
   }
 
-
-  bool listContains(String first, String last){
-    for(var i = 0; i < friendsList.length; i++){
-      if( friendsList[i].fname == first && friendsList[i].lname == last){
+  bool listContains(String first, String last) {
+    for (var i = 0; i < friendsList.length; i++) {
+      if (friendsList[i].fname == first && friendsList[i].lname == last) {
         return true;
       }
     }
     return false;
   }
 
-  bool isMe(String first, String last){
-    return first==fname && last==lname;
+  bool isMe(String first, String last) {
+    return first == fname && last == lname;
   }
 
-  Future<void> getMe() async{
-    Firestore.instance.collection("users").document("${widget.uid}").get().then((doc) => {
-      fname = doc["fname"],
-      lname = doc['surname'],
-    });
+  Future<void> getMe() async {
+    Firestore.instance
+        .collection("users")
+        .document("${widget.uid}")
+        .get()
+        .then((doc) => {
+              fname = doc["fname"],
+              lname = doc['surname'],
+            });
   }
 
   Future<void> getFriendsListList() async {
@@ -128,7 +131,6 @@ class _SocialPageState extends State<SocialPage> {
         )
         .toList();
   }
-  
 
   Widget buildAllUsersList() {
     return new StreamBuilder<QuerySnapshot>(
@@ -136,7 +138,7 @@ class _SocialPageState extends State<SocialPage> {
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return Container();
-          } 
+          }
           return new ListView(children: getAllUsersList(snapshot));
         });
   }
@@ -155,7 +157,9 @@ class _SocialPageState extends State<SocialPage> {
                 lname: doc['surname'],
                 uid: doc['uid'],
               ),
-              flag: listContains(doc['fname'], doc['surname']) ? 2 : isMe(doc['fname'], doc['surname']) ? 3 : 0,
+              flag: listContains(doc['fname'], doc['surname'])
+                  ? 2
+                  : isMe(doc['fname'], doc['surname']) ? 3 : 0,
               friendslist: friendsList,
             ),
           ),
@@ -173,7 +177,6 @@ class _SocialPageState extends State<SocialPage> {
     }
     return found;
   }
-
 }
 
 class FriendCard extends StatefulWidget {
@@ -189,13 +192,12 @@ class FriendCard extends StatefulWidget {
 }
 
 class _FriendCardState extends State<FriendCard> {
-
   Widget buttonText = Text("Add");
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    if(inFriendsList(widget.friend.fname,widget.friend.lname)){
+    if (inFriendsList(widget.friend.fname, widget.friend.lname)) {
       buttonText = Icon(Icons.check);
     }
   }
@@ -215,12 +217,13 @@ class _FriendCardState extends State<FriendCard> {
   Add friend to firebase
   */
   Future<void> addFriend(Friend fun) async {
-    Firestore.instance.collection("users/${widget.uid}/Friends")
-    .document(fun.fname+" "+fun.lname)
-    .setData({
+    Firestore.instance
+        .collection("users/${widget.uid}/Friends")
+        .document(fun.fname + " " + fun.lname)
+        .setData({
       "fname": fun.fname,
       "surname": fun.lname,
-      "uid" : fun.uid,
+      "uid": fun.uid,
     });
   }
 
@@ -255,7 +258,11 @@ class _FriendCardState extends State<FriendCard> {
                     ),
                   ),
                   color: Colors.teal[200],
-                  child: widget.flag == 0 ? buttonText : (widget.flag ==1) ?Text("View Profile") : widget.flag==2 ? Icon(Icons.check) : Text("You"),
+                  child: widget.flag == 0
+                      ? buttonText
+                      : (widget.flag == 1)
+                          ? Text("View Profile")
+                          : widget.flag == 2 ? Icon(Icons.check) : Text("You"),
                   onPressed: () {
                     if (widget.flag == 0) {
                       addFriend(widget.friend);
@@ -263,12 +270,11 @@ class _FriendCardState extends State<FriendCard> {
                         buttonText = Icon(Icons.check);
                         widget.friendslist.add(widget.friend);
                       });
-                    } 
-                    else if(widget.flag == 1) {
+                    } else if (widget.flag == 1) {
                       //vuew profile
                       Navigator.of((context)).push(MaterialPageRoute(
-                        builder: (context) =>
-                          FriendProfilePage(uid: widget.friend.uid)));
+                          builder: (context) =>
+                              FriendProfilePage(uid: widget.friend.uid.trim())));
                     }
                   },
                 ),
@@ -281,39 +287,44 @@ class _FriendCardState extends State<FriendCard> {
   }
 }
 
-
-class FriendProfilePage extends StatefulWidget{
+class FriendProfilePage extends StatefulWidget {
   final String uid;
 
   FriendProfilePage({this.uid});
 
   @override
-  FriendProfilePageState createState() => FriendProfilePageState(); 
+  FriendProfilePageState createState() => FriendProfilePageState();
 }
 
-
-class FriendProfilePageState extends State<FriendProfilePage>{
-  DocumentSnapshot user;
+class FriendProfilePageState extends State<FriendProfilePage> {
+  DocumentSnapshot fdoc;
   int f_count, b_count;
 
   @override
-  void initState(){
+  void initState() {
+    print(widget.uid);
+    fdoc=null;
+    f_count=null;
+    b_count=null;
     super.initState();
-    Firestore.instance.collection("users").document(widget.uid).get().then((DocumentSnapshot result) => {
-      user = result,
-      update()
-    });
-    Firestore.instance.collection("users/${widget.uid}/Friends").getDocuments().then((myDocuments) => {
-      f_count = myDocuments.documents.length,
-      update()
-    });
-    Firestore.instance.collection("users/${widget.uid}/Books").getDocuments().then((myDocuments) => {
-      b_count = myDocuments.documents.length,
-      update()
-    });
+    Firestore.instance
+        .collection("users")
+        .document(widget.uid.trim())
+        .get()
+        .then((DocumentSnapshot result) => { fdoc = result,update() });
+    Firestore.instance
+        .collection("users/${widget.uid}/Friends")
+        .getDocuments()
+        .then((myDocuments) =>
+            {f_count = myDocuments.documents.length,});
+    Firestore.instance
+        .collection("users/${widget.uid}/Books")
+        .getDocuments()
+        .then((myDocuments) =>
+            {b_count = myDocuments.documents.length, update()});
   }
 
-  void update(){
+  void update() {
     setState(() {
       //update
     });
@@ -321,51 +332,111 @@ class FriendProfilePageState extends State<FriendProfilePage>{
 
   @override
   Widget build(BuildContext context) {
-    if(user == null || f_count==null || b_count==null){
-      return SizedBox(
-        height: MediaQuery.of(context).size.height
-      );
+    if (this.fdoc == null || f_count == null || b_count == null) {
+      return SizedBox(height: MediaQuery.of(context).size.height);
     }
-    return Scaffold(
+    else{
+      return Scaffold(
       appBar: AppBar(
-          bottomOpacity: 0.0,
-          elevation: 0.0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: Colors.teal[200],
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          automaticallyImplyLeading: false,
-          //backgroundColor: Colors.white,
+        bottomOpacity: 0.0,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.teal[200],
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-      body: Column(
-        children: <Widget>[
-          Padding(padding: EdgeInsets.only(top: 20.0),),
-          Center(
-            child: CircleAvatar(
-              backgroundColor: Colors.teal[200],
-              minRadius: 100.0,
-              child: Text(
-                "${user["fname"][0]}${user["surname"][0]}",
-                style: TextStyle(fontSize: 80.0, color: Colors.white),
+        automaticallyImplyLeading: false,
+        //backgroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 20.0),
               ),
-            ),
+              Center(
+                child: CircleAvatar(
+                  backgroundColor: Colors.teal[200],
+                  minRadius: 70.0,
+                  child: Text(
+                    "${this.fdoc["fname"][0]}${this.fdoc["surname"][0]}",
+                    style: TextStyle(fontSize: 50.0, color: Colors.white),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10.0),
+              ),
+              Center(
+                child: Text(
+                  "${this.fdoc["fname"]} ${this.fdoc["surname"]}",
+                  style: TextStyle(fontSize: 30.0),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10.0),
+              ),
+              Center(child: Text("$f_count Friends  |  $b_count Books")),
+              Divider(),
+              Container(
+                height:320.0,  
+                child:buildBookList(),
+              ),
+            ],
           ),
-          Padding(padding: EdgeInsets.only(top: 10.0),),
-          Center(
-            child: Text(
-              "${user["fname"]} ${user["surname"]}",
-                style: TextStyle(fontSize: 30.0),
-            ),
-          ),
-          Padding(padding: EdgeInsets.only(top: 10.0),),
-          Center(
-            child: Text("$f_count Friends  |  $b_count Books")
-          ),
-        ],
+        ),
       ),
     );
+    }
+  } //build()
+
+  /*
+  Get List of books from firebase
+  */
+  Widget buildBookList() {
+    return new StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance
+            .collection("users/${widget.uid}/Books")
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData || snapshot.data.documents.length==0) {
+            return new ListTile(
+              title: Center(child: Text("No books in library"),),
+            );
+          }
+          return new ListView(children: getBookList(snapshot));
+        });
   }
+
+  /*
+  Map firebase snapshop to BookCards
+  */
+  getBookList(AsyncSnapshot<QuerySnapshot> snapshot) {
+    return snapshot.data.documents
+        .map(
+          (doc) => new Container(
+            width: 400.0,
+            height: 160.0,
+            child: new BookCard(
+              new Book(
+                  title: doc["title"],
+                  author: doc['author'],
+                  pages: doc['pages'],
+                  rating: doc['rating'],
+                  coverImageURL: doc['url'],
+                  userRating: doc['userRating'].toDouble()),
+              false,
+              widget.uid,
+              false
+            ),
+          ),
+        )
+        .toList();
+  }
+
 }
