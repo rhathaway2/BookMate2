@@ -230,6 +230,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     .collection("users")
                                     .document(currentUser.user.uid)
                                     .setData({
+                                      "darkMode": false,
                                       "uid": currentUser.user.uid,
                                       "fname": firstNameInputController.text,
                                       "surname": lastNameInputController.text,
