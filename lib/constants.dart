@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 class Constants{
-  static const String IP_ADDR = "35.163.223.169:8000";
+  static const String IP_ADDR = "192.168.102.81:8000";
 
   //Colors for theme
   static Color lightPrimary = Color(0xfffcfcff);
