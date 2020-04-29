@@ -151,7 +151,8 @@ class _CurrentBookCardState extends State<CurrentBookCard> {
         .document("CurrentBook")
         .get()
         .then((doc) => {
-              setState(() {
+              if(doc.exists){
+                setState(() {
                 book = new Book(
                     title: doc["title"],
                     author: doc['author'],
@@ -160,6 +161,10 @@ class _CurrentBookCardState extends State<CurrentBookCard> {
                     coverImageURL: doc['url'],
                     userRating: doc['userRating'].toDouble());
               }),
+              }
+              else{
+                book=null
+              }
             });
   }
 
