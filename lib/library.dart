@@ -67,25 +67,6 @@ class _LibraryPageState extends State<LibraryPage> {
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      /*  bottomNavigationBar: BottomAppBar(
-          child: new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: () {
-                  widget.dkey.currentState.openDrawer();
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {},
-              )
-            ],
-          ),
-        ),
-        */
         body: buildBookList());
   }
 
@@ -152,7 +133,8 @@ class _LibraryPageState extends State<LibraryPage> {
                   userRating: doc['userRating'].toDouble()),
               false,
               widget.uid,
-              forceUpdate,
+              true,
+              refresh: forceUpdate,
             ),
           ),
         )
@@ -166,7 +148,8 @@ class BookCard extends StatefulWidget {
   final bool isFavorited;
   final String uid;
   final void Function() refresh;
-  BookCard(this.book, this.isFavorited, this.uid, this.refresh); //constructor
+  final bool slideableActive;
+  BookCard(this.book, this.isFavorited, this.uid, this.slideableActive, {this.refresh}); //constructor
 
   @override
   _BookCardState createState() => _BookCardState(book, isFavorited);
@@ -199,13 +182,6 @@ class _BookCardState extends State<BookCard> {
               width: 100.0,
               height: 160.0,
               child: snapshot.data,
-              /*
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                image: new DecorationImage(
-                  image: snapshot.data
-                ),  
-              ),*/
             );
           } else {
             return Container(
@@ -286,6 +262,7 @@ class _BookCardState extends State<BookCard> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 3.0),
       child: Slidable(
+        enabled: widget.slideableActive,
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
         secondaryActions: <Widget>[
@@ -305,7 +282,7 @@ class _BookCardState extends State<BookCard> {
           onTap: () {
             Navigator.of((context)).push(MaterialPageRoute(
                 builder: (context) =>
-                    BookDetailsPage(uid: widget.uid, book: widget.book)));
+                    BookDetailsPage(uid: widget.uid, book: widget.book, starsEditable: widget.slideableActive,)));
           },
           child: Container(
             height: 160.0,
