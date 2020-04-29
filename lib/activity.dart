@@ -1,9 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'classes.dart';
 import 'activity_page_widgets.dart';
+import 'package:flutter_xlider/flutter_xlider.dart';
 
 
 /*
@@ -34,7 +34,7 @@ class _ActivityPageState extends State<ActivityPage> {
         child:Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          WeekActivity(),
+          WeekActivity(uid: widget.uid),
           CurrentBookCard(widget.uid),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -51,6 +51,8 @@ class _ActivityPageState extends State<ActivityPage> {
 
 
 class WeekActivity extends StatefulWidget {
+  final String uid;
+  WeekActivity({this.uid});
   @override
   WeekActivityState createState() => WeekActivityState();
 }
@@ -61,31 +63,110 @@ class WeekActivityState extends State<WeekActivity> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 5),
-      child: WeekBarGraph(),
+      child: WeekBarGraph(uid: widget.uid),
     );
   }
 }
 
 class WeekBarGraph extends StatefulWidget {
+  final String uid;
+  WeekBarGraph({this.uid});
   @override
   WeekBarGraphState createState() => WeekBarGraphState();
 }
 
 class WeekBarGraphState extends State<WeekBarGraph> {
   bool colapsed = true;
+  double _lowerValue=0;
+  double _upperValue=500;
   final Duration animDuration = Duration(milliseconds: 2500);
 
   int touchedIndex;
 
   List<ReadingData> readingData = [
-    ReadingData(day: "Sun", pages: 10),
-    ReadingData(day: "Mon", pages: 23),
-    ReadingData(day: "Tue", pages: 43),
-    ReadingData(day: "Wed", pages: 13),
-    ReadingData(day: "Thu", pages: 15),
-    ReadingData(day: "Fri", pages: 34),
-    ReadingData(day: "Sat", pages: 27),
+    ReadingData(day: "Mon", pages: 0),
+    ReadingData(day: "Tue", pages: 0),
+    ReadingData(day: "Wed", pages: 0),
+    ReadingData(day: "Thur", pages: 0),
+    ReadingData(day: "Fri", pages: 0),
+    ReadingData(day: "Sat", pages: 0),
+    ReadingData(day: "Sun", pages: 0),
   ];
+
+  @override
+  void initState(){
+    super.initState();
+    Firestore.instance
+        .collection("users/${widget.uid}/WeeklyReadingData").document("data").get().then((data) => {
+          for(var i=0; i < readingData.length; i++){
+            readingData[i].pages = data[readingData[i].day].toDouble()
+          },
+          update()
+        });
+    
+    }
+
+  void update() {
+    setState(() {
+      //update
+    });
+  }
+
+  void updateDailyReading(double pages){
+    String currentDay="";
+    //get current day
+    DateTime date = DateTime.now();
+    switch(date.weekday){
+      case 1: currentDay="Mon"; break;
+      case 2: currentDay="Tue"; break;
+      case 3: currentDay="Wed"; break;
+      case 4: currentDay="Thur"; break;
+      case 5: currentDay="Fri"; break;
+      case 6: currentDay="Sat"; break;
+      case 7: currentDay="Sun"; break;
+    }
+
+    Firestore.instance
+      .collection("users/${widget.uid}/WeeklyReadingData").document("data")
+      .setData({
+        "$currentDay": pages
+      }, merge: true);
+  }
+
+  Widget buildReadingUpdateDialog(BuildContext context){
+    return new AlertDialog(
+      title: const Text("Daily Reading Log"),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("How many pages did you read today?"),
+          FlutterSlider(
+            values: [500],
+            min: 0,
+            max: 500,
+            onDragCompleted: (handlerIndex, lowerValue, upperValue){
+              setState(() {
+                updateDailyReading(lowerValue);
+              });
+            },
+
+          ),
+        ],
+      ),
+    );
+  }
+
+  //retrieve weekly reading data from firebase
+  getWeekData(){
+    Firestore.instance
+        .collection("users/${widget.uid}/WeeklyReadingData").document("data").get().then((data) => {
+          for(int i=0; i < readingData.length; i++){
+            readingData[i].pages = data[readingData[i].day].toDouble()
+          },
+          update()
+        });
+  }
 
   String getMonth(int mon){
     switch(mon){
@@ -136,7 +217,7 @@ class WeekBarGraphState extends State<WeekBarGraph> {
         shadowColor: Color(0x802196F3),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         color: Colors.teal[200],
-        child: colapsed ? collapsedGraphDisply() : fullGraphDisplay(),
+        child: colapsed ? collapsedGraphDisply() : fullGraphDisplay(/*context*/),
       ),
     );
   }
@@ -180,7 +261,7 @@ class WeekBarGraphState extends State<WeekBarGraph> {
     );
   }
 
-  Widget fullGraphDisplay() {
+  Widget fullGraphDisplay(/*BuildContext context*/) {
     return Stack(
       children: <Widget>[
         Padding(
@@ -230,7 +311,10 @@ class WeekBarGraphState extends State<WeekBarGraph> {
                 icon: Icon(Icons.add,
                     size: 45.0),
                 onPressed: () {
-                  
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => buildReadingUpdateDialog(context),
+                  ).then((_) => getWeekData());
                 }),
           ),
         ),
@@ -301,25 +385,25 @@ class WeekBarGraphState extends State<WeekBarGraph> {
               String weekDay;
               switch (group.x.toInt()) {
                 case 0:
-                  weekDay = 'Sunday';
-                  break;
-                case 1:
                   weekDay = 'Monday';
                   break;
-                case 2:
+                case 1:
                   weekDay = 'Tuesday';
                   break;
-                case 3:
+                case 2:
                   weekDay = 'Wednesday';
                   break;
-                case 4:
+                case 3:
                   weekDay = 'Thursday';
                   break;
-                case 5:
+                case 4:
                   weekDay = 'Friday';
                   break;
-                case 6:
+                case 5:
                   weekDay = 'Saturday';
+                  break;
+                case 6:
+                  weekDay = 'Sunday';
                   break;
               }
               return BarTooltipItem(
