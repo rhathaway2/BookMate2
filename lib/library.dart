@@ -196,6 +196,10 @@ class _BookCardState extends State<BookCard> {
 
   //get book card
   Widget get bookCard {
+    String booktitle = book.title;
+    if(book.title.length > 35){
+      booktitle = book.title.substring(0, 35) + "...";
+    }
     return Container(
         width: MediaQuery.of(context).size.width - 70,
         height: 160.0,
@@ -210,7 +214,7 @@ class _BookCardState extends State<BookCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                Text(widget.book.title,
+                Text(booktitle,
                     style: Theme.of(context).textTheme.headline),
                 Text(widget.book.author,
                     style: Theme.of(context).textTheme.subhead),

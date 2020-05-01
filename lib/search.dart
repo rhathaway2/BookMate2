@@ -22,6 +22,7 @@ class SearchListState extends State<SearchList> {
   //Book to display when searching
   Book display1, display2;
   bool bookToDisplay = false;
+  bool secondBookToo = false;
   bool searching = false;
   bool errorOccurred = false;
   //text controller used to clear text form
@@ -131,11 +132,11 @@ class SearchListState extends State<SearchList> {
                       textColor: Colors.white,
                       onPressed: () {
                         addBookToFireBaseUser(display1).then((resp) => {
-                          setState(() {
-                            bookToDisplay = false;
-                            _textController.clear();
-                          })
-                        });
+                              setState(() {
+                                bookToDisplay = false;
+                                _textController.clear();
+                              })
+                            });
                       },
                     ),
                   ),
@@ -154,6 +155,7 @@ class SearchListState extends State<SearchList> {
                       onPressed: () {
                         setState(() {
                           bookToDisplay = false;
+                          secondBookToo = false;
                           _textController.clear();
                         });
                       },
@@ -162,63 +164,69 @@ class SearchListState extends State<SearchList> {
                 ),
               ],
             ),
-            Container(
-              height: 154.0,
-              width: 400.0,
-              child: Stack(
-                children: <Widget>[
-                  Positioned(left: 70.0, child: buildAddBookCard(display2)),
-                  Positioned(top: 5.0, child: getCoverImage(display2)),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            secondBookToo ? Column(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: ButtonTheme(
-                    minWidth: 150.0,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      child: Text("Add"),
-                      color: Colors.teal[200],
-                      textColor: Colors.white,
-                      onPressed: () {
-                        addBookToFireBaseUser(display2).then((resp) => {
-                          setState(() {
-                            bookToDisplay = false;
-                            _textController.clear();
-                          })
-                        });
-                      },
-                    ),
+                Container(
+                  height: 154.0,
+                  width: 400.0,
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(left: 70.0, child: buildAddBookCard(display2)),
+                      Positioned(top: 5.0, child: getCoverImage(display2)),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: ButtonTheme(
-                    minWidth: 150.0,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                      child: ButtonTheme(
+                        minWidth: 150.0,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          child: Text("Add"),
+                          color: Colors.teal[200],
+                          textColor: Colors.white,
+                          onPressed: () {
+                            addBookToFireBaseUser(display2).then((resp) => {
+                                  setState(() {
+                                    bookToDisplay = false;
+                                    secondBookToo = false;
+                                    _textController.clear();
+                                  })
+                                });
+                          },
+                        ),
                       ),
-                      child: Text("Cancel"),
-                      color: Colors.pink,
-                      textColor: Colors.white,
-                      onPressed: () {
-                        setState(() {
-                          bookToDisplay = false;
-                          _textController.clear();
-                        });
-                      },
                     ),
-                  ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                      child: ButtonTheme(
+                        minWidth: 150.0,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          child: Text("Cancel"),
+                          color: Colors.pink,
+                          textColor: Colors.white,
+                          onPressed: () {
+                            setState(() {
+                              bookToDisplay = false;
+                              secondBookToo = false;
+                              _textController.clear();
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            )
+            ) : new Container(),
           ],
         ),
       );
@@ -229,18 +237,20 @@ class SearchListState extends State<SearchList> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
-            child: CircularProgressIndicator(
-              strokeWidth: 5,
-              backgroundColor: Colors.teal[300],
+              child: CircularProgressIndicator(
+                strokeWidth: 5,
+                backgroundColor: Colors.teal[300],
+              ),
             ),
-            ),
-            Text("Searching... This may take a few seconds", style: TextStyle(fontSize: 14.0),)
+            Text(
+              "Searching... This may take a few seconds",
+              style: TextStyle(fontSize: 14.0),
+            )
           ],
         ),
       );
-    } 
-    else if(errorOccurred = true){
-
+    } else if (errorOccurred == true) {
+      return Container(child: Text("An Error occurred. Please try again"));
     } else {
       return Container();
     }
@@ -291,6 +301,11 @@ class SearchListState extends State<SearchList> {
 
   //get Add book card
   Widget buildAddBookCard(Book book) {
+    String booktitle = book.title;
+    if(book.title.length > 35){
+      booktitle = book.title.substring(0, 35) + "...";
+    }
+  
     return Container(
         width: 290.0,
         height: 160.0,
@@ -305,7 +320,7 @@ class SearchListState extends State<SearchList> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                Text(book.title, style: Theme.of(context).textTheme.headline),
+                Text(booktitle, style: Theme.of(context).textTheme.headline),
                 Text(book.author, style: Theme.of(context).textTheme.subhead),
                 Text("${book.pages.toString()} pages",
                     style: Theme.of(context).textTheme.subhead),
@@ -334,7 +349,7 @@ class SearchListState extends State<SearchList> {
   /*
   Add a book to firebase for the current user
   */
-  Future<void> addBookToFireBaseUser(Book book) async{
+  Future<void> addBookToFireBaseUser(Book book) async {
     Firestore.instance
         .collection("users/${widget.uid}/Books")
         .document((book.title))
@@ -369,14 +384,13 @@ class SearchListState extends State<SearchList> {
     await get(url).then((response) => {
           //update the screen
           setState(() {
-            if(response.body == "Error"){
+            if (response.body == "Error") {
               setState(() {
                 errorOccurred = true;
                 bookToDisplay = false;
                 searching = false;
               });
-            }
-            else{
+            } else {
               var allResponses = response.body.split("<br>");
               var resp = allResponses[0].split("|");
               String title = resp[0];
@@ -391,28 +405,37 @@ class SearchListState extends State<SearchList> {
                   pages: pages,
                   rating: rating,
                   coverImageURL: bookCoverUrl);
-              display1 = b;
-
-              var resp2 = allResponses[1].split("|");
-              String title2 = resp2[0];
-              String author2 = resp2[1];
-              var rating2 = double.parse(resp2[2]);
-              var pages2 = int.parse(resp2[3]);
-              var bookCoverUrl2 = "$title2$author2.jpg";
-              Book c = new Book(
-                  title: title2,
-                  author: author2,
-                  pages: pages2,
-                  rating: rating2,
-                  coverImageURL: bookCoverUrl2);
-              display2 = c;
-
-              bookToDisplay = true;
-              searching=false;
-
-              //update firebase
+              display1 = b; 
               addBookToFireBaseGlobal(b);
-              addBookToFireBaseGlobal(c);
+
+              try {
+                var resp2 = allResponses[1].split("|");
+                String title2 = resp2[0];
+                String author2 = resp2[1];
+                var rating2 = double.parse(resp2[2]);
+                var pages2 = int.parse(resp2[3]);
+                var bookCoverUrl2 = "$title2$author2.jpg";
+                Book c = new Book(
+                    title: title2,
+                    author: author2,
+                    pages: pages2,
+                    rating: rating2,
+                    coverImageURL: bookCoverUrl2);
+                display2 = c;
+
+                bookToDisplay = true;
+                secondBookToo = true;
+                searching = false;
+
+                //update firebase
+                addBookToFireBaseGlobal(c);
+              }
+              catch(e){
+                secondBookToo = false;
+                bookToDisplay = true;
+                searching = false;
+              }
+              
             }
           })
         });
