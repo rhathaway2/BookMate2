@@ -262,20 +262,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                                             "users/${currentUser.user.uid}/Books"),
                                                     Firestore.instance
                                                         .collection(
-                                                            "users/${currentUser.user.uid}/Notes"),
-                                                    Firestore.instance
-                                                        .collection(
-                                                            "users/${currentUser.user.uid}/Reviews"),
-                                                    Firestore.instance
-                                                        .collection(
-                                                            "users/${currentUser.user.uid}/Posts")
-                                                        .document(
-                                                            "Created Account")
-                                                        .setData({
-                                                      "Date": DateTime.now(),
-                                                    }),
-                                                    Firestore.instance
-                                                        .collection(
                                                             "users/${currentUser.user.uid}/Friends"),
                                                     Firestore.instance.collection("allUsers")
                                                     .document(firstNameInputController.text+" "+lastNameInputController.text)
@@ -284,6 +270,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                                       "surname": lastNameInputController.text,
                                                       "uid": currentUser.user.uid,
                                                     }),
+                                                    Firestore.instance
+                                                        .collection(
+                                                            "users/${currentUser.user.uid}/WeeklyReadingData")
+                                                            .document("data")
+                                                            .setData({
+                                                              "Mon": 0, "Tue": 0, "Wed": 0, "Thur": 0 , "Fri": 0, "Sat": 0, "Sun":0,
+                                                            }),
                                                     //clear inputs
                                                     firstNameInputController
                                                         .clear(),
