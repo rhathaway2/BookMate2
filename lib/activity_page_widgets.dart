@@ -7,9 +7,8 @@ import 'classes.dart';
 
 */
 class FriendStatus extends StatefulWidget {
-  FriendStatus({Key key, this.uid, this.title}) : super(key: key);
+  FriendStatus({Key key, this.uid}) : super(key: key);
   final String uid;
-  final String title;
   @override
   _FriendStatusState createState() => _FriendStatusState();
 }
@@ -163,7 +162,9 @@ class _CurrentBookCardState extends State<CurrentBookCard> {
               }),
               }
               else{
-                book=null
+                setState(() {
+                book=null;
+                })
               }
             });
   }
@@ -215,6 +216,10 @@ class _CurrentBookCardState extends State<CurrentBookCard> {
     if(book == null){
       return Container();
     }
+    String booktitle = book.title;
+    if(booktitle.length > 28){
+      booktitle = booktitle.substring(0, 25) + "...";
+    }
     return Container(
       child: Padding(
       padding: EdgeInsets.symmetric(horizontal: 5),
@@ -234,7 +239,7 @@ class _CurrentBookCardState extends State<CurrentBookCard> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Text("Currently Reading", style: TextStyle(fontSize:22.0, fontWeight: FontWeight.bold)),
-                Text(book.title, style: TextStyle(fontSize: 18.0)),
+                Text(booktitle, style: TextStyle(fontSize: 18.0)),
                 Text(book.author, style: TextStyle(fontSize: 14.0)),
                 Text("${book.pages.toString()} pages",
                     style: TextStyle(fontSize: 14.0)),
