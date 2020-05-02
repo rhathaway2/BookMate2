@@ -67,6 +67,11 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    String booktitle = widget.book.title;
+    if(booktitle.length > 30){
+      booktitle = booktitle.substring(0, 28) + "...";
+    }
+    
     return Scaffold(
         //backgroundColor: Colors.white,
         appBar: AppBar(
@@ -113,13 +118,8 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       .collection("users/${widget.uid}/Books")
                       .document((widget.book.title))
                       .setData({
-                    "title": widget.book.title,
-                    "author": widget.book.author,
-                    "pages": widget.book.pages,
-                    "rating": widget.book.rating,
-                    "url": widget.book.coverImageURL,
-                    "userRating": value
-                  });
+                        "userRating": value
+                      }, merge: true);
                 }
                 else{
                   setState(() {
@@ -153,7 +153,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       padding: EdgeInsets.all(5.0),
                       child: Center(
                           child: Text(
-                        widget.book.title,
+                        booktitle,
                         style: TextStyle(fontSize: 25.0),
                       ))),
                   Padding(
