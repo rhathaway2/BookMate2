@@ -135,7 +135,8 @@ class SearchListState extends State<SearchList> {
                               setState(() {
                                 bookToDisplay = false;
                                 _textController.clear();
-                              })
+                              }),
+                              widget.refresh()
                             });
                       },
                     ),
@@ -196,7 +197,8 @@ class SearchListState extends State<SearchList> {
                                     bookToDisplay = false;
                                     secondBookToo = false;
                                     _textController.clear();
-                                  })
+                                  }),
+                                  widget.refresh()
                                 });
                           },
                         ),

@@ -32,7 +32,7 @@ class _LibraryPageState extends State<LibraryPage> {
   //Variables
   List<Book> booklist;
   List<Book> favorited;
-
+  List<BookCard> bookcards;
   bool bookAdded = false;
 
   //Constructor
@@ -45,8 +45,9 @@ class _LibraryPageState extends State<LibraryPage> {
 
   void addCallback() {
     setState(() {
-      bookAdded = true;
+      bookcards = [];
     });
+    //rebuildAllCards();
   }
 
   void forceUpdate() {
@@ -73,12 +74,13 @@ class _LibraryPageState extends State<LibraryPage> {
   /*
   open search menu
   */
-  void openSearchMenu() {
+  openSearchMenu() {
     bookAdded = false;
     //open search menu
     Navigator.of((context)).push(MaterialPageRoute(
         builder: (context) =>
-            SearchList(uid: widget.uid, refresh: addCallback)));
+            SearchList(uid: widget.uid, refresh: addCallback)))
+            .then((_) => { setState((){bookcards=[];}) });
   }
 
   /*
@@ -97,7 +99,15 @@ class _LibraryPageState extends State<LibraryPage> {
               subtitle: Text("Click below to find books"),
             );
           }
-          return new ListView(children: getBookList(snapshot));
+          bookcards = getBookList(snapshot);
+          List<Container> toDisplay = bookcards.map((element) {
+            return new Container(
+              width: 400.0,
+              height: 160.0,
+              child: element
+            );
+          }).toList();
+          return new ListView(children: toDisplay);
         });
   }
 
@@ -105,25 +115,9 @@ class _LibraryPageState extends State<LibraryPage> {
   Map firebase snapshop to BookCards
   */
   getBookList(AsyncSnapshot<QuerySnapshot> snapshot) {
-    //add all books to booklist vector
-    snapshot.data.documents.map((doc) => {
-          if (doc.documentID != "inializer")
-            {
-              booklist.add(new Book(
-                  title: doc["title"],
-                  author: doc['author'],
-                  pages: doc['pages'],
-                  rating: doc['rating'],
-                  coverImageURL: doc['url'],
-                  userRating: doc['userRating'].toDouble())),
-            }
-        });
     return snapshot.data.documents
         .map(
-          (doc) => new Container(
-            width: 400.0,
-            height: 160.0,
-            child: new BookCard(
+          (doc) => new BookCard(
               new Book(
                   title: doc["title"],
                   author: doc['author'],
@@ -136,7 +130,6 @@ class _LibraryPageState extends State<LibraryPage> {
               true,
               refresh: forceUpdate,
             ),
-          ),
         )
         .toList();
   }
@@ -169,6 +162,12 @@ class _BookCardState extends State<BookCard> {
     img = Image.network(url.toString(), fit: BoxFit.cover);
     return img;
   }
+
+  refresh(){
+  setState((){
+    print("Updated");
+  });
+}
 
   //get cover of the book
   Widget getCoverImage() {
