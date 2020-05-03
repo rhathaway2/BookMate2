@@ -68,8 +68,8 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   @override
   Widget build(BuildContext context) {
     String booktitle = widget.book.title;
-    if(booktitle.length > 30){
-      booktitle = booktitle.substring(0, 28) + "...";
+    if(booktitle.length > 27){
+      booktitle = booktitle.substring(0, 25) + "...";
     }
     
     return Scaffold(
