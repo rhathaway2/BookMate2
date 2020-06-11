@@ -34,6 +34,7 @@ class _LibraryPageState extends State<LibraryPage> {
   List<Book> favorited;
   List<BookCard> bookcards;
   bool bookAdded = false;
+  bool bugfix = true;
 
   //Constructor
   _LibraryPageState({this.booklist, this.favorited});
@@ -44,14 +45,13 @@ class _LibraryPageState extends State<LibraryPage> {
   }
 
   void addCallback() {
-    setState(() {
-      bookcards = [];
-    });
+    setState((){bookcards=[]; bugfix = false;});
+    setState((){bugfix = true;});
     //rebuildAllCards();
   }
 
-  void forceUpdate() {
-    setState(() {});
+  void forceUpdate(bool status) {
+    setState((){bugfix = status;});
   }
 
   @override
@@ -68,7 +68,7 @@ class _LibraryPageState extends State<LibraryPage> {
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        body: buildBookList());
+        body: bugfix == true ? buildBookList() : Container());
   }
 
   /*
@@ -80,7 +80,8 @@ class _LibraryPageState extends State<LibraryPage> {
     Navigator.of((context)).push(MaterialPageRoute(
         builder: (context) =>
             SearchList(uid: widget.uid, refresh: addCallback)))
-            .then((_) => { setState((){bookcards=[];}) });
+            .then((_) => { setState((){bookcards=[]; bugfix = false;})})
+            .then((value) => setState((){bugfix = true;}));
   }
 
   /*
@@ -140,7 +141,7 @@ class BookCard extends StatefulWidget {
   final Book book; //book displayed on card
   final bool isFavorited;
   final String uid;
-  final void Function() refresh;
+  final void Function(bool) refresh;
   final bool slideableActive;
   BookCard(this.book, this.isFavorited, this.uid, this.slideableActive, {this.refresh}); //constructor
 
@@ -162,12 +163,6 @@ class _BookCardState extends State<BookCard> {
     img = Image.network(url.toString(), fit: BoxFit.cover);
     return img;
   }
-
-  refresh(){
-  setState((){
-    print("Updated");
-  });
-}
 
   //get cover of the book
   Widget getCoverImage() {
@@ -257,7 +252,7 @@ class _BookCardState extends State<BookCard> {
         .collection("users/${widget.uid}/Books")
         .document((b.title))
         .delete()
-        .then((resp) => {widget.refresh()});
+        .then((resp) => {widget.refresh(false)}).then((value) => {widget.refresh(true)});
   }
 
   @override
